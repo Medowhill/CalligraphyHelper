@@ -116,7 +116,14 @@ public class SketchActivity extends Activity {
         });
 
         multiButton_menu.setDrawableID(new int[]{R.drawable.sketch_menu_load,
-                R.drawable.sketch_menu_save});
+                R.drawable.sketch_menu_save, R.drawable.sketch_menu_newletter});
+
+        multiButton_menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        }, 2);
 
     }
 
@@ -126,6 +133,11 @@ public class SketchActivity extends Activity {
 
     public void setRedoButton(boolean enabled) {
         imageButton_redo.setEnabled(enabled);
+    }
+
+    public void closeMenu() {
+        if (menuAnimation == STATE_MENU_VISIBLE)
+            scrollView_menu.startAnimation(animation_menu_disappear);
     }
 
 }

@@ -55,36 +55,6 @@ public class SketchView extends View {
     // 화면에 표시되고 있는 격자의 간격
     private int interval = 160;
 
-    // Pointer class
-    // 화면을 터치하는 각각의 pointer instance
-    private class Pointer {
-
-        // 역할에 대한 상수
-        // 역할 미정, canvas의 평행 이동, letter의 평행 이동, 역할 없음
-        final static int ROLE_UNCERTAIN = -1, ROLE_CANVAS_MOVE = 0, ROLE_LETTER_MOVE = 1, ROLE_NONE = 2;
-
-        // 이동을 지시하는 pointer가 되기 위한 최소의 이동 횟수
-        final static int MOVE_LIMIT = 2;
-
-        // Pointer의 ID
-        int id;
-
-        // Pointer가 수행하는 역할, 기본 값은 역할 미정
-        int role = ROLE_UNCERTAIN;
-
-        // Pointer가 화면을 터치하면서 이동한 횟수
-        int moved = 0;
-
-        // Pointer가 이동하기 전 위치의 좌표
-        Point prev;
-
-        // Constructor
-        Pointer(int id, Point prev) {
-            this.id = id;
-            this.prev = prev;
-        }
-    }
-
     public SketchView(Context context, AttributeSet attrs) {
         // Constructor
         super(context, attrs);
@@ -200,6 +170,10 @@ public class SketchView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        // Activity의 메뉴가 안보이게 한다
+        if (sketchActivity != null)
+            sketchActivity.closeMenu();
+
         // Event의 좌표 및 ID
         final float x = event.getX();
         final float y = event.getY();
@@ -461,5 +435,35 @@ public class SketchView extends View {
 
     public void setSketchActivity(SketchActivity sketchActivity) {
         this.sketchActivity = sketchActivity;
+    }
+
+    // Pointer class
+    // 화면을 터치하는 각각의 pointer instance
+    private class Pointer {
+
+        // 역할에 대한 상수
+        // 역할 미정, canvas의 평행 이동, letter의 평행 이동, 역할 없음
+        final static int ROLE_UNCERTAIN = -1, ROLE_CANVAS_MOVE = 0, ROLE_LETTER_MOVE = 1, ROLE_NONE = 2;
+
+        // 이동을 지시하는 pointer가 되기 위한 최소의 이동 횟수
+        final static int MOVE_LIMIT = 2;
+
+        // Pointer의 ID
+        int id;
+
+        // Pointer가 수행하는 역할, 기본 값은 역할 미정
+        int role = ROLE_UNCERTAIN;
+
+        // Pointer가 화면을 터치하면서 이동한 횟수
+        int moved = 0;
+
+        // Pointer가 이동하기 전 위치의 좌표
+        Point prev;
+
+        // Constructor
+        Pointer(int id, Point prev) {
+            this.id = id;
+            this.prev = prev;
+        }
     }
 }
