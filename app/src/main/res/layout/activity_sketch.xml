@@ -66,9 +66,12 @@
         android:orientation="horizontal">
 
         <ImageView
+            android:id="@+id/imageView_letterPreview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="#FFFFFF"
+            android:scaleType="centerInside"
             android:visibility="invisible" />
 
         <GridView
@@ -76,9 +79,31 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="#000000"
             android:numColumns="6"
             android:visibility="invisible"></GridView>
 
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout_letter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left|bottom"
+        android:visibility="invisible">
+
+        <Button
+            android:id="@+id/button_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/sketch_cancel" />
+
+        <Button
+            android:id="@+id/button_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/sketch_add" />
+    </LinearLayout>
+
 
 </FrameLayout>
