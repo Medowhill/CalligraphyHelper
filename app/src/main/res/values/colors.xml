@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="sketch_selected">#00CCCC</color>
+    <color name="sketch_axis">#222222</color>
+    <color name="sketch_line">#88AAAAAA</color>
+
+</resources>

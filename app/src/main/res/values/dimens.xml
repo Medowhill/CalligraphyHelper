@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <integer name="sketch_selected_stroke">5</integer>
+    <integer name="sketch_axis_stroke">5</integer>
+    <integer name="sketch_line_stroke">3</integer>
+
+</resources>
