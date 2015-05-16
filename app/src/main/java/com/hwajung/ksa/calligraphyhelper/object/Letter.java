@@ -1,6 +1,7 @@
 package com.hwajung.ksa.calligraphyhelper.object;
 
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -12,11 +13,9 @@ import com.hwajung.ksa.calligraphyhelper.R;
  */
 public class Letter {
 
-    private static final int[] BITMAP_ID = new int[]{R.drawable.test};
-
-    private static Resources resources;
     private static final int BLACK_CONST = 75;
-
+    private static int[] BITMAP_ID;
+    private static Resources resources;
     private int id; // 글자의 고유 ID
     private int resolution;
     private float size = 1; // 글자가 그려지는 배율
@@ -67,6 +66,14 @@ public class Letter {
         return letter;
     }
 
+    public static void setResources(Resources resources) {
+        Letter.resources = resources;
+        TypedArray typedArray = resources.obtainTypedArray(R.array.letters_drawable_id_array);
+        BITMAP_ID = new int[typedArray.length()];
+        for (int i = 0; i < typedArray.length(); i++)
+            BITMAP_ID[i] = typedArray.getResourceId(i, -1);
+    }
+
     public float[] toFloatArray() {
         float[] arr = new float[5];
         arr[0] = id;
@@ -77,10 +84,6 @@ public class Letter {
         return arr;
     }
 
-    public static void setResources(Resources resources) {
-        Letter.resources = resources;
-    }
-
     public Bitmap getBitmap() {
         return bitmap;
     }
@@ -89,12 +92,24 @@ public class Letter {
         return point;
     }
 
+    public void setPoint(Point point) {
+        this.point = point;
+    }
+
     public float getDegree() {
         return degree;
     }
 
+    public void setDegree(float degree) {
+        this.degree = degree;
+    }
+
     public float getSize() {
         return size;
+    }
+
+    public void setSize(float size) {
+        this.size = size;
     }
 
     public int getWidth() {
@@ -103,17 +118,5 @@ public class Letter {
 
     public int getHeight() {
         return bitmap.getHeight();
-    }
-
-    public void setPoint(Point point) {
-        this.point = point;
-    }
-
-    public void setDegree(float degree) {
-        this.degree = degree;
-    }
-
-    public void setSize(float size) {
-        this.size = size;
     }
 }

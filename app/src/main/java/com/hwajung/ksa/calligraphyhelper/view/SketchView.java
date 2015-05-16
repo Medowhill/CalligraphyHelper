@@ -81,10 +81,6 @@ public class SketchView extends View {
         letters = new ArrayList<>();
         pointers = new ArrayList<>();
 
-        // Tmp code
-        letters.add(Letter.getLetter(0, new Point(0, 0)));
-        letters.add(Letter.getLetter(0, new Point(600, 0)));
-
         // Redo, undo 용 stack 초기화
         redoStack = new Stack<>();
         undoStack = new Stack<>();

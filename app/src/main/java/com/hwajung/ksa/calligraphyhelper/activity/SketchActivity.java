@@ -7,9 +7,11 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ScrollView;
 
 import com.hwajung.ksa.calligraphyhelper.R;
+import com.hwajung.ksa.calligraphyhelper.adapter.LetterAdapter;
 import com.hwajung.ksa.calligraphyhelper.view.MultiButton;
 import com.hwajung.ksa.calligraphyhelper.view.SketchView;
 
@@ -21,6 +23,7 @@ public class SketchActivity extends Activity {
     SketchView sketchView;
     Button imageButton_menu, imageButton_undo, imageButton_redo;
     MultiButton multiButton_menu;
+    GridView gridView_letter;
 
     ScrollView scrollView_menu;
 
@@ -40,10 +43,14 @@ public class SketchActivity extends Activity {
         imageButton_redo = (Button) findViewById(R.id.button_redo);
         imageButton_undo = (Button) findViewById(R.id.button_undo);
         multiButton_menu = (MultiButton) findViewById(R.id.multiButton_menu);
+        gridView_letter = (GridView) findViewById(R.id.gridView_letter);
 
         scrollView_menu = (ScrollView) findViewById(R.id.scrollView_menu);
 
         sketchView.setSketchActivity(this);
+
+        LetterAdapter letterAdapter = new LetterAdapter(this);
+        gridView_letter.setAdapter(letterAdapter);
 
         animation_menu_appear = AnimationUtils.loadAnimation(this, R.anim.sketch_menu_appear);
         animation_menu_appear.setAnimationListener(new Animation.AnimationListener() {
@@ -116,12 +123,13 @@ public class SketchActivity extends Activity {
         });
 
         multiButton_menu.setDrawableID(new int[]{R.drawable.sketch_menu_load,
-                R.drawable.sketch_menu_save, R.drawable.sketch_menu_newletter});
+                R.drawable.sketch_menu_save,
+                R.drawable.sketch_menu_newletter});
 
         multiButton_menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                gridView_letter.setVisibility(View.VISIBLE);
             }
         }, 2);
 
@@ -138,6 +146,7 @@ public class SketchActivity extends Activity {
     public void closeMenu() {
         if (menuAnimation == STATE_MENU_VISIBLE)
             scrollView_menu.startAnimation(animation_menu_disappear);
+        gridView_letter.setVisibility(View.INVISIBLE);
     }
 
 }

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="letters_drawable_id_array">
+        <item>@drawable/hangul_consonant_1_1</item>
+        <item>@drawable/hangul_consonant_2_1</item>
+        <item>@drawable/hangul_consonant_3_1</item>
+        <item>@drawable/hangul_consonant_4_1</item>
+        <item>@drawable/hangul_vowel_1_1</item>
+        <item>@drawable/hangul_vowel_2_1</item>
+    </string-array>
+
+</resources>
