@@ -3,6 +3,7 @@ package com.hwajung.ksa.calligraphyhelper.activity;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -34,6 +35,7 @@ public class SketchActivity extends Activity {
     Animation animation_menu_appear, animation_menu_disappear;
 
     int menuAnimation = STATE_MENU_INVISIBLE;
+    int selectedLetter = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +66,7 @@ public class SketchActivity extends Activity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 imageView_letterPreview.setVisibility(View.VISIBLE);
                 imageView_letterPreview.setImageResource((int) letterAdapter.getItem(i));
+                selectedLetter = i;
                 button_add.setEnabled(true);
             }
         });
@@ -154,6 +157,17 @@ public class SketchActivity extends Activity {
             }
         });
 
+        button_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (selectedLetter != -1)
+                    sketchView.addLetter(selectedLetter);
+                linearLayout_letter.setVisibility(View.INVISIBLE);
+                gridView_letter.setVisibility(View.INVISIBLE);
+                imageView_letterPreview.setVisibility(View.INVISIBLE);
+            }
+        });
+
         multiButton_menu.setDrawableID(new int[]{R.drawable.sketch_menu_load,
                 R.drawable.sketch_menu_save,
                 R.drawable.sketch_menu_newletter});
@@ -167,6 +181,13 @@ public class SketchActivity extends Activity {
                 button_add.setEnabled(false);
             }
         }, 2);
+
+        imageView_letterPreview.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return true;
+            }
+        });
 
     }
 
@@ -182,7 +203,7 @@ public class SketchActivity extends Activity {
         if (menuAnimation == STATE_MENU_VISIBLE)
             scrollView_menu.startAnimation(animation_menu_disappear);
         gridView_letter.setVisibility(View.INVISIBLE);
-        button_cancel.setVisibility(View.INVISIBLE);
+        linearLayout_letter.setVisibility(View.INVISIBLE);
     }
 
 }

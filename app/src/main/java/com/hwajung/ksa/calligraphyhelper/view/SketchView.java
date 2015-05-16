@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import com.hwajung.ksa.calligraphyhelper.R;
 import com.hwajung.ksa.calligraphyhelper.activity.SketchActivity;
@@ -431,6 +432,21 @@ public class SketchView extends View {
 
     public void setSketchActivity(SketchActivity sketchActivity) {
         this.sketchActivity = sketchActivity;
+    }
+
+    public void addLetter(int id) {
+        Letter letter = Letter.getLetter(id, new Point(-xShift, -yShift));
+        if (letter != null) {
+            // 기존 상태를 undo stack에 저장
+            templateLetterData = new float[letters.size()][];
+            for (int i = 0; i < letters.size(); i++)
+                templateLetterData[i] = letters.get(i).toFloatArray();
+            undoStack.push(templateLetterData);
+
+            letters.add(letter);
+            invalidate();
+        } else
+            Toast.makeText(getContext(), "메모리가 부족하여 새로운 글씨 이미지를 불러올 수 없습니다.", Toast.LENGTH_SHORT).show();
     }
 
     // Pointer class
