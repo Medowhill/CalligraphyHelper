@@ -7,12 +7,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.hwajung.ksa.calligraphyhelper.R;
+
 /**
  * Created by Jaemin on 2015-05-06.
  */
 public class MultiButton extends LinearLayout {
 
     private Button[] buttons;
+    private int[] drawableId;
 
     public MultiButton(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -20,7 +23,13 @@ public class MultiButton extends LinearLayout {
 
     public void setDrawableID(int[] drawableID) {
 
+        this.drawableId = drawableID;
+
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParams.topMargin = getResources().getDimensionPixelSize(R.dimen.sketch_margin_button);
+        layoutParams.rightMargin = getResources().getDimensionPixelSize(R.dimen.sketch_margin_button);
+        layoutParams.bottomMargin = getResources().getDimensionPixelSize(R.dimen.sketch_margin_button);
+        layoutParams.leftMargin = getResources().getDimensionPixelSize(R.dimen.sketch_margin_button);
 
         buttons = new Button[drawableID.length];
 
@@ -31,8 +40,13 @@ public class MultiButton extends LinearLayout {
         }
     }
 
-    public void setOnClickListener(View.OnClickListener onClickListener, int index) {
-        buttons[index].setOnClickListener(onClickListener);
+    public void setOnClickListener(View.OnClickListener onClickListener, int id) {
+        for (int i = 0; i < drawableId.length; i++) {
+            if (drawableId[i] == id) {
+                buttons[i].setOnClickListener(onClickListener);
+                break;
+            }
+        }
     }
 
 }

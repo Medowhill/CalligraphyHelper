@@ -449,6 +449,38 @@ public class SketchView extends View {
             Toast.makeText(getContext(), "메모리가 부족하여 새로운 글씨 이미지를 불러올 수 없습니다.", Toast.LENGTH_SHORT).show();
     }
 
+    public byte[] getData() {
+        String data = "";
+        for (Letter letter : letters)
+            data += 0 + "\t" + letter.getId() + "\t" + letter.getPoint().x + "\t" + letter.getPoint().y + "\t" + letter.getSize() + "\t" + letter.getDegree() + "\n";
+        return data.getBytes();
+    }
+
+    public void setDataByByteArray(byte[] data) {
+        letters.clear();
+
+        String stringData = new String(data);
+        String[] datas = stringData.split("\n");
+        for (String str : datas) {
+            String[] split = str.split("\t");
+            switch (Integer.parseInt(split[0])) {
+                case 0:
+                    int id = Integer.parseInt(split[1]);
+                    float x = Float.parseFloat(split[2]);
+                    float y = Float.parseFloat(split[3]);
+                    float size = Float.parseFloat(split[4]);
+                    float degree = Float.parseFloat(split[5]);
+                    Letter letter = Letter.getLetter(id, new Point(x, y));
+                    letter.setSize(size);
+                    letter.setDegree(degree);
+                    letters.add(letter);
+                    break;
+            }
+        }
+
+        invalidate();
+    }
+
     // Pointer class
     // 화면을 터치하는 각각의 pointer instance
     private class Pointer {

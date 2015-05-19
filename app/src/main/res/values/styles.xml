@@ -4,4 +4,9 @@
     <style name="AppTheme" parent="@android:style/Theme.Holo.NoActionBar.Fullscreen">
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="sketch_scrollbar_style">
+        <item name="android:scrollbars">none</item>
+    </style>
+
 </resources>

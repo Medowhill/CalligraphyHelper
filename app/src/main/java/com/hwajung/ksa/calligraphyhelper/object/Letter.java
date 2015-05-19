@@ -119,4 +119,8 @@ public class Letter {
     public int getHeight() {
         return bitmap.getHeight();
     }
+
+    public int getId() {
+        return id;
+    }
 }

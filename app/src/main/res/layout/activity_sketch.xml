@@ -18,8 +18,10 @@
 
         <ScrollView
             android:id="@+id/scrollView_menu"
+            style="@style/sketch_scrollbar_style"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
             android:visibility="invisible">
 
             <com.hwajung.ksa.calligraphyhelper.view.MultiButton
@@ -34,7 +36,8 @@
             android:id="@+id/button_menu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/sketch_menu_button" />
+            android:layout_margin="@dimen/sketch_margin_button"
+            android:background="@drawable/sketch_menu" />
 
     </LinearLayout>
 
@@ -48,14 +51,16 @@
             android:id="@+id/button_undo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/sketch_menu_undo"
+            android:layout_margin="@dimen/sketch_margin_button"
+            android:background="@drawable/sketch_undo"
             android:enabled="false" />
 
         <Button
             android:id="@+id/button_redo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/sketch_menu_redo"
+            android:layout_margin="@dimen/sketch_margin_button"
+            android:background="@drawable/sketch_redo"
             android:enabled="false" />
 
     </LinearLayout>
@@ -96,14 +101,22 @@
             android:id="@+id/button_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="@dimen/sketch_margin_button"
             android:background="@drawable/sketch_cancel" />
 
         <Button
             android:id="@+id/button_add"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="@dimen/sketch_margin_button"
             android:background="@drawable/sketch_add" />
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/textView_fileName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        android:textSize="20sp" />
 
 </FrameLayout>
