@@ -3,18 +3,17 @@ package com.hwajung.ksa.calligraphyhelper.activity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.ImageButton;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,20 +32,21 @@ import java.io.IOException;
 public class SketchActivity extends Activity {
 
     final int STATE_MENU_VISIBLE = 0, STATE_MENU_INVISIBLE = 1, STATE_MENU_APPEARING = 2, STATE_MENU_DISAPPEARING = 3;
+    final int REQUEST_DATABASE = 0;
 
     SketchView sketchView;
-    Button button_menu, button_undo, button_redo, button_cancel, button_add;
+    ImageButton button_menu, button_undo, button_redo, button_cancel;
     MultiButton multiButton_menu;
     GridView gridView_letter;
-    ImageView imageView_letterPreview;
     ScrollView scrollView_menu;
-    LinearLayout linearLayout_letter;
     TextView textView_fileName;
 
-    Animation animation_menu_appear, animation_menu_disappear;
+    Animation animation_menu_appear, animation_menu_disappear, animation_newLetter_appear, animation_newLetter_disappear;
+
+    SharedPreferences sharedPreferences;
 
     int menuAnimation = STATE_MENU_INVISIBLE;
-    int selectedLetter = -1;
+    int newLetterAnimation = STATE_MENU_INVISIBLE;
 
     String fileName = "NoName";
 
@@ -58,17 +58,21 @@ public class SketchActivity extends Activity {
         Log.i("TEST", "go");
 
         sketchView = (SketchView) findViewById(R.id.sketchView);
-        button_menu = (Button) findViewById(R.id.button_menu);
-        button_redo = (Button) findViewById(R.id.button_redo);
-        button_undo = (Button) findViewById(R.id.button_undo);
-        button_cancel = (Button) findViewById(R.id.button_cancel);
-        button_add = (Button) findViewById(R.id.button_add);
+        button_menu = (ImageButton) findViewById(R.id.button_menu);
+        button_redo = (ImageButton) findViewById(R.id.button_redo);
+        button_undo = (ImageButton) findViewById(R.id.button_undo);
+        button_cancel = (ImageButton) findViewById(R.id.button_cancel);
         multiButton_menu = (MultiButton) findViewById(R.id.multiButton_menu);
         gridView_letter = (GridView) findViewById(R.id.gridView_letter);
-        imageView_letterPreview = (ImageView) findViewById(R.id.imageView_letterPreview);
         scrollView_menu = (ScrollView) findViewById(R.id.scrollView_menu);
-        linearLayout_letter = (LinearLayout) findViewById(R.id.linearLayout_letter);
         textView_fileName = (TextView) findViewById(R.id.textView_fileName);
+
+        sharedPreferences = getSharedPreferences(getResources().getString(R.string.sharedPreferences_name), MODE_PRIVATE);
+        int version = sharedPreferences.getInt(getResources().getString(R.string.sharedPreferences_version), 0);
+        if (version != getResources().getInteger(R.integer.version)) {
+            Intent intent = new Intent(getApplicationContext(), DatabaseActivity.class);
+            startActivityForResult(intent, REQUEST_DATABASE);
+        }
 
         sketchView.setSketchActivity(this);
 
@@ -78,10 +82,10 @@ public class SketchActivity extends Activity {
         gridView_letter.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                imageView_letterPreview.setVisibility(View.VISIBLE);
-                imageView_letterPreview.setImageResource((int) letterAdapter.getItem(i));
-                selectedLetter = i;
-                button_add.setEnabled(true);
+                if (i != -1)
+                    sketchView.addLetter(i);
+                gridView_letter.startAnimation(animation_newLetter_disappear);
+                button_cancel.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -130,6 +134,42 @@ public class SketchActivity extends Activity {
             }
         });
 
+        animation_newLetter_appear = AnimationUtils.loadAnimation(this, R.anim.sketch_newletter_appear);
+        animation_newLetter_appear.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                gridView_letter.setVisibility(View.VISIBLE);
+                newLetterAnimation = STATE_MENU_APPEARING;
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                newLetterAnimation = STATE_MENU_VISIBLE;
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
+
+        animation_newLetter_disappear = AnimationUtils.loadAnimation(this, R.anim.sketch_newletter_disappear);
+        animation_newLetter_disappear.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                newLetterAnimation = STATE_MENU_DISAPPEARING;
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                newLetterAnimation = STATE_MENU_INVISIBLE;
+                gridView_letter.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
+
         button_menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -165,20 +205,8 @@ public class SketchActivity extends Activity {
         button_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                gridView_letter.setVisibility(View.INVISIBLE);
-                imageView_letterPreview.setVisibility(View.INVISIBLE);
-                linearLayout_letter.setVisibility(View.INVISIBLE);
-            }
-        });
-
-        button_add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (selectedLetter != -1)
-                    sketchView.addLetter(selectedLetter);
-                linearLayout_letter.setVisibility(View.INVISIBLE);
-                gridView_letter.setVisibility(View.INVISIBLE);
-                imageView_letterPreview.setVisibility(View.INVISIBLE);
+                gridView_letter.startAnimation(animation_newLetter_disappear);
+                button_cancel.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -215,13 +243,13 @@ public class SketchActivity extends Activity {
 
                     // 파일이 존재하지 않을 시 dialog를 표시하지 않는다.
                     if (split.length == 0) {
-                        Toast.makeText(getApplicationContext(), "File does not exist", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.fileNotExist), Toast.LENGTH_SHORT).show();
                         return;
                     }
 
                     // Dialog를 생성한다.
                     AlertDialog.Builder adb = new AlertDialog.Builder(SketchActivity.this);
-                    adb.setTitle("Open File");
+                    adb.setTitle(getResources().getString(R.string.openFile));
 
                     adb.setItems(split, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
@@ -234,16 +262,14 @@ public class SketchActivity extends Activity {
                                 fis.close();
 
                                 sketchView.setDataByByteArray(data);
-                            } catch (FileNotFoundException fnf) {
-                                Toast.makeText(getApplicationContext(), "File does not exist", Toast.LENGTH_SHORT).show();
                             } catch (IOException ioe) {
-
+                                Toast.makeText(getApplicationContext(), getResources().getString(R.string.fileLoadingError), Toast.LENGTH_SHORT).show();
                             }
 
                         }
                     });
 
-                    adb.setNegativeButton("cancel", null);
+                    adb.setNegativeButton(getResources().getString(R.string.cancel), null);
                     adb.show();
 
                 } catch (FileNotFoundException fnfException) {
@@ -253,7 +279,7 @@ public class SketchActivity extends Activity {
                     } catch (IOException ioe) {
                     }
                 } catch (IOException ioException) {
-                    Toast.makeText(getApplicationContext(), "Fail to load files", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), getString(R.string.fileLoadingError), Toast.LENGTH_SHORT).show();
                 }
             }
         }, R.drawable.sketch_load);
@@ -352,18 +378,10 @@ public class SketchActivity extends Activity {
             @Override
             public void onClick(View view) {
                 scrollView_menu.startAnimation(animation_menu_disappear);
-                gridView_letter.setVisibility(View.VISIBLE);
-                linearLayout_letter.setVisibility(View.VISIBLE);
-                button_add.setEnabled(false);
+                gridView_letter.startAnimation(animation_newLetter_appear);
+                //button_cancel.setVisibility(View.VISIBLE);
             }
         }, R.drawable.sketch_newletter);
-
-        imageView_letterPreview.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                return true;
-            }
-        });
 
     }
 
@@ -378,8 +396,28 @@ public class SketchActivity extends Activity {
     public void closeMenu() {
         if (menuAnimation == STATE_MENU_VISIBLE)
             scrollView_menu.startAnimation(animation_menu_disappear);
-        gridView_letter.setVisibility(View.INVISIBLE);
-        linearLayout_letter.setVisibility(View.INVISIBLE);
+        if (newLetterAnimation == STATE_MENU_VISIBLE)
+            gridView_letter.startAnimation(animation_newLetter_disappear);
+        button_cancel.setVisibility(View.INVISIBLE);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_DATABASE:
+                if (resultCode == RESULT_CANCELED) {
+                    finish();
+                } else {
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putInt(getResources().getString(R.string.sharedPreferences_version), getResources().getInteger(R.integer.version));
+                    editor.commit();
+                }
+                break;
+        }
+    }
 }

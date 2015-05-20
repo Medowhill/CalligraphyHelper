@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.hwajung.ksa.calligraphyhelper.R;
@@ -14,7 +14,7 @@ import com.hwajung.ksa.calligraphyhelper.R;
  */
 public class MultiButton extends LinearLayout {
 
-    private Button[] buttons;
+    private ImageButton[] buttons;
     private int[] drawableId;
 
     public MultiButton(Context context, AttributeSet attrs) {
@@ -31,10 +31,10 @@ public class MultiButton extends LinearLayout {
         layoutParams.bottomMargin = getResources().getDimensionPixelSize(R.dimen.sketch_margin_button);
         layoutParams.leftMargin = getResources().getDimensionPixelSize(R.dimen.sketch_margin_button);
 
-        buttons = new Button[drawableID.length];
+        buttons = new ImageButton[drawableID.length];
 
         for (int i = 0; i < drawableID.length; i++) {
-            buttons[i] = new Button(getContext());
+            buttons[i] = new ImageButton(getContext());
             buttons[i].setBackground(getContext().getResources().getDrawable(drawableID[i]));
             addView(buttons[i], layoutParams);
         }

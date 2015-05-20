@@ -2,6 +2,7 @@ package com.hwajung.ksa.calligraphyhelper.adapter;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -47,7 +48,9 @@ public class LetterAdapter extends BaseAdapter {
         ImageView imageView;
         if (view == null) {
             imageView = new ImageView(context);
+            imageView.setBackgroundColor(Color.WHITE);
             imageView.setLayoutParams(new GridView.LayoutParams(100, 100));
+
             //imageView.setAdjustViewBounds(false);
             imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         } else {

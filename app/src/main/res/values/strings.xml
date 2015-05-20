@@ -2,5 +2,15 @@
 <resources>
 
     <string name="app_name">CalligraphyHelper</string>
+    <string name="sharedPreferences_name">data</string>
+    <string name="sharedPreferences_version">version</string>
+    <string name="cancel">취소</string>
+    <string name="ok">확인</string>
+    <string name="openFile">파일 불러오기</string>
+    <string name="saveFile">파일 저장</string>
+    <string name="fileNotExist">저장되어 있는 파일이 없습니다.</string>
+    <string name="fileLoadingError">파일을 불러오는 중 문제가 발생했습니다.</string>
+    <string name="fileSavingError">파일을 저장하는 중 문제가 발생했습니다.</string>
+    <string name="fileSavingSuccess">파일을 성공적으로 저장했습니다.</string>
 
 </resources>
