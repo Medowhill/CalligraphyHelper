@@ -43,6 +43,8 @@ public class SketchActivity extends Activity {
 
     Animation animation_menu_appear, animation_menu_disappear, animation_newLetter_appear, animation_newLetter_disappear;
 
+    LetterAdapter letterAdapter;
+
     SharedPreferences sharedPreferences;
 
     int menuAnimation = STATE_MENU_INVISIBLE;
@@ -51,7 +53,7 @@ public class SketchActivity extends Activity {
     String fileName = "NoName";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sketch);
 
@@ -67,16 +69,19 @@ public class SketchActivity extends Activity {
         scrollView_menu = (ScrollView) findViewById(R.id.scrollView_menu);
         textView_fileName = (TextView) findViewById(R.id.textView_fileName);
 
+        letterAdapter = new LetterAdapter(this);
+
         sharedPreferences = getSharedPreferences(getResources().getString(R.string.sharedPreferences_name), MODE_PRIVATE);
         int version = sharedPreferences.getInt(getResources().getString(R.string.sharedPreferences_version), 0);
         if (version != getResources().getInteger(R.integer.version)) {
             Intent intent = new Intent(getApplicationContext(), DatabaseActivity.class);
             startActivityForResult(intent, REQUEST_DATABASE);
+        } else {
+            letterAdapter.load();
         }
 
         sketchView.setSketchActivity(this);
 
-        final LetterAdapter letterAdapter = new LetterAdapter(this);
         gridView_letter.setAdapter(letterAdapter);
 
         gridView_letter.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -224,63 +229,33 @@ public class SketchActivity extends Activity {
 
                 closeMenu();
 
-                try {
-                    // 기존에 저장한 파일 이름 목록을 불러온다.
+                // 기존에 저장한 파일 이름 목록을 불러온다.
+                final String fileNames = readFileNames();
 
-                    // Stream을 연다.
-                    FileInputStream fis = getApplicationContext().openFileInput("saveFiles");
-
-                    // 파일을 읽어 byte 배열에 기록한다.
-                    byte[] data = new byte[fis.available()];
-                    fis.read(data);
-
-                    // Stream을 닫는다.
-                    fis.close();
-
-                    // String 배열로 변환한다.
-                    String files = new String(data);
-                    final String[] split = files.split("\t");
-
-                    // 파일이 존재하지 않을 시 dialog를 표시하지 않는다.
-                    if (split.length == 0) {
-                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.fileNotExist), Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
-                    // Dialog를 생성한다.
-                    AlertDialog.Builder adb = new AlertDialog.Builder(SketchActivity.this);
-                    adb.setTitle(getResources().getString(R.string.openFile));
-
-                    adb.setItems(split, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            String openFileName = split[whichButton];
-
-                            try {
-                                FileInputStream fis = getApplicationContext().openFileInput(openFileName);
-                                byte[] data = new byte[fis.available()];
-                                fis.read(data);
-                                fis.close();
-
-                                sketchView.setDataByByteArray(data);
-                            } catch (IOException ioe) {
-                                Toast.makeText(getApplicationContext(), getResources().getString(R.string.fileLoadingError), Toast.LENGTH_SHORT).show();
-                            }
-
-                        }
-                    });
-
-                    adb.setNegativeButton(getResources().getString(R.string.cancel), null);
-                    adb.show();
-
-                } catch (FileNotFoundException fnfException) {
-                    try {
-                        FileOutputStream fos = getApplicationContext().openFileOutput("saveFiles", MODE_PRIVATE);
-                        fos.close();
-                    } catch (IOException ioe) {
-                    }
-                } catch (IOException ioException) {
-                    Toast.makeText(getApplicationContext(), getString(R.string.fileLoadingError), Toast.LENGTH_SHORT).show();
+                // 파일이 존재하지 않을 시 dialog를 표시하지 않는다.
+                if (fileNames.length() == 0) {
+                    Toast.makeText(getApplicationContext(), R.string.fileNotExist, Toast.LENGTH_SHORT).show();
+                    return;
                 }
+
+                final String[] split = fileNames.split("\t");
+
+                // Dialog를 생성한다.
+                AlertDialog.Builder adb = new AlertDialog.Builder(SketchActivity.this);
+                adb.setTitle(R.string.openFile);
+
+                adb.setItems(split, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        String fileName = split[whichButton];
+                        if (loadFile(fileName))
+                            Toast.makeText(getApplicationContext(), R.string.fileLoadingSuccess, Toast.LENGTH_SHORT).show();
+                        else
+                            Toast.makeText(getApplicationContext(), R.string.fileLoadingFail, Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                adb.setNegativeButton(R.string.cancel, null);
+                adb.show();
             }
         }, R.drawable.sketch_load);
 
@@ -293,83 +268,11 @@ public class SketchActivity extends Activity {
                 closeMenu();
 
                 // 기존에 저장한 파일 이름 목록을 불러온다.
-                String[] split = new String[0];
-                String files_ = "";
-                try {
-                    // Stream을 연다.
-                    FileInputStream fis = getApplicationContext().openFileInput("saveFiles");
-
-                    // 파일을 읽어 byte 배열에 기록한다.
-                    byte[] data = new byte[fis.available()];
-                    fis.read(data);
-
-                    // Stream을 닫는다.
-                    fis.close();
-
-                    // 파일 이름 목록을 만든다.
-                    files_ = new String(data);
-                    split = files_.split("\t");
-
-                } catch (FileNotFoundException fnfException) {
-                } catch (IOException ioException) {
-                    Toast.makeText(getApplicationContext(), "Fail to load files", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                final String[] fileNames = split;
-                final String files = files_;
+                final String fileNames = readFileNames();
+                final String[] fileNameList = fileNames.split("\t");
 
                 // Dialog를 생성한다.
-                AlertDialog.Builder adb = new AlertDialog.Builder(SketchActivity.this);
-                adb.setTitle("Save File");
-                final View dialogView = getLayoutInflater().inflate(R.layout.dialog_save, null);
-                adb.setView(dialogView);
-
-                adb.setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                        // EditText를 가져온다.
-                        final EditText editText = (EditText) dialogView.findViewById(R.id.editText_save);
-
-                        // 파일 이름을 가져온다.
-                        String fileName = editText.getText().toString();
-
-                        // 파일 이름이 없을 시 다시 입력받는다.
-                        if (fileName.length() == 0) {
-                            Toast.makeText(getApplicationContext(), "No file name.", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-
-                        // 이미 존재하는 파일 이름일 시 다시 입력받는다.
-                        for (int j = 0; j < fileNames.length; j++) {
-                            if (fileNames[j].equals(fileName)) {
-                                Toast.makeText(getApplicationContext(), "File already exists.", Toast.LENGTH_SHORT).show();
-                                return;
-                            }
-                        }
-
-                        // 파일을 저장한다.
-                        try {
-                            FileOutputStream fos = getApplicationContext().openFileOutput(fileName, MODE_PRIVATE);
-                            byte[] data = sketchView.getData();
-                            fos.write(data);
-                            fos.close();
-                        } catch (IOException ioe) {
-                            Toast.makeText(getApplicationContext(), "Fail to save files", Toast.LENGTH_SHORT).show();
-                        }
-
-                        // 파일 이름 목록에 파일 이름을 추가해 저장한다.
-                        try {
-                            FileOutputStream fos = getApplicationContext().openFileOutput("saveFiles", MODE_PRIVATE);
-                            byte[] data = (files + fileName + "\t").getBytes();
-                            fos.write(data);
-                            fos.close();
-                        } catch (IOException ioe) {
-                            Toast.makeText(getApplicationContext(), "Fail to save files", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-                adb.setNegativeButton("cancel", null);
+                AlertDialog.Builder adb = fileSavingDialog(fileNameList);
                 adb.show();
             }
         }, R.drawable.sketch_save);
@@ -383,6 +286,126 @@ public class SketchActivity extends Activity {
             }
         }, R.drawable.sketch_newletter);
 
+    }
+
+    private boolean loadFile(String fileName) {
+        try {
+            FileInputStream fis = getApplicationContext().openFileInput(fileName);
+            byte[] data = new byte[fis.available()];
+            fis.read(data);
+            fis.close();
+
+            sketchView.setDataByByteArray(data);
+        } catch (IOException ioe) {
+            return false;
+        }
+        return true;
+    }
+
+    private AlertDialog.Builder fileSavingDialog(String[] fileNameList_) {
+
+        AlertDialog.Builder adb = new AlertDialog.Builder(SketchActivity.this);
+        adb.setTitle(R.string.saveFile);
+        final View dialogView = getLayoutInflater().inflate(R.layout.dialog_save, null);
+        adb.setView(dialogView);
+        final String[] fileNameList = fileNameList_;
+
+        adb.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                // EditText를 가져온다.
+                final EditText editText = (EditText) dialogView.findViewById(R.id.editText_save);
+
+                // 파일 이름을 가져온다.
+                final String fileName = editText.getText().toString();
+
+                // 파일 이름이 없을 시 다시 입력받는다.
+                if (fileName.length() == 0) {
+                    Toast.makeText(getApplicationContext(), R.string.fileNameEmpty, Toast.LENGTH_SHORT).show();
+                    AlertDialog.Builder adb1 = fileSavingDialog(fileNameList);
+                    adb1.show();
+                    return;
+                }
+
+                // 이미 존재하는 파일 이름일 시 다시 입력받는다.
+                for (int j = 0; j < fileNameList.length; j++) {
+                    if (fileNameList[j].equals(fileName)) {
+                        AlertDialog.Builder adb1 = new AlertDialog.Builder(SketchActivity.this);
+                        adb1.setMessage(R.string.fileOverwrite);
+                        adb1.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                if (saveFile(fileName, false))
+                                    Toast.makeText(getApplicationContext(), R.string.fileSavingSuccess, Toast.LENGTH_SHORT).show();
+                                else
+                                    Toast.makeText(getApplicationContext(), R.string.fileSavingFail, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        adb1.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                AlertDialog.Builder adb2 = fileSavingDialog(fileNameList);
+                                adb2.show();
+                            }
+                        });
+                        adb1.show();
+                        return;
+                    }
+                }
+
+                if (saveFile(fileName, true))
+                    Toast.makeText(getApplicationContext(), R.string.fileSavingSuccess, Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(getApplicationContext(), R.string.fileSavingFail, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        adb.setNegativeButton(R.string.cancel, null);
+        return adb;
+    }
+
+    private boolean saveFile(String fileName, boolean needAddition) {
+        // 파일을 저장한다.
+        try {
+            FileOutputStream fos = getApplicationContext().openFileOutput(fileName, MODE_PRIVATE);
+            byte[] data = sketchView.getData();
+            fos.write(data);
+            fos.flush();
+            fos.close();
+        } catch (IOException ioe) {
+            return false;
+        }
+
+        // 파일 이름 목록에 파일 이름을 추가해 저장한다.
+        if (needAddition) {
+            try {
+                FileOutputStream fos = getApplicationContext().openFileOutput(getString(R.string.fileName_saveFileNames), MODE_APPEND);
+                byte[] data = (fileName + "\t").getBytes();
+                fos.write(data);
+                fos.flush();
+                fos.close();
+            } catch (IOException ioe) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private String readFileNames() {
+        // 기존에 저장한 파일 이름 목록을 불러온다.
+        String fileNames = "";
+        try {
+            FileInputStream fis = getApplicationContext().openFileInput(getString(R.string.fileName_saveFileNames));
+            byte[] data = new byte[fis.available()];
+            fis.read(data);
+            fis.close();
+            fileNames = new String(data);
+        } catch (FileNotFoundException fnfException) {
+        } catch (IOException ioException) {
+            Toast.makeText(getApplicationContext(), getString(R.string.fileLoadingFail), Toast.LENGTH_SHORT).show();
+        }
+        return fileNames;
     }
 
     public void setUndoButton(boolean enabled) {
@@ -416,6 +439,7 @@ public class SketchActivity extends Activity {
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putInt(getResources().getString(R.string.sharedPreferences_version), getResources().getInteger(R.integer.version));
                     editor.commit();
+                    letterAdapter.load();
                 }
                 break;
         }
