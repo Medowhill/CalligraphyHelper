@@ -88,7 +88,7 @@ public class SketchActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if (i != -1)
-                    sketchView.addLetter(i);
+                    sketchView.addLetter((int) letterAdapter.getItemId(i));
                 gridView_letter.startAnimation(animation_newLetter_disappear);
                 button_cancel.setVisibility(View.INVISIBLE);
             }
@@ -116,7 +116,6 @@ public class SketchActivity extends Activity {
 
             @Override
             public void onAnimationRepeat(Animation animation) {
-
             }
         });
 
@@ -222,17 +221,17 @@ public class SketchActivity extends Activity {
                 R.drawable.sketch_draw});
 
         multiButton_menu.setOnClickListener(new View.OnClickListener() {
-            // 불러오기 버튼을 눌렀을 때
+            // Click load button
 
             @Override
             public void onClick(View view) {
 
                 closeMenu();
 
-                // 기존에 저장한 파일 이름 목록을 불러온다.
+                // Load existing file name list
                 final String fileNames = readFileNames();
 
-                // 파일이 존재하지 않을 시 dialog를 표시하지 않는다.
+                // If file does not exist, does not show dialog
                 if (fileNames.length() == 0) {
                     Toast.makeText(getApplicationContext(), R.string.fileNotExist, Toast.LENGTH_SHORT).show();
                     return;
@@ -240,7 +239,7 @@ public class SketchActivity extends Activity {
 
                 final String[] split = fileNames.split("\t");
 
-                // Dialog를 생성한다.
+                // Make dialog
                 AlertDialog.Builder adb = new AlertDialog.Builder(SketchActivity.this);
                 adb.setTitle(R.string.openFile);
 
@@ -260,18 +259,18 @@ public class SketchActivity extends Activity {
         }, R.drawable.sketch_load);
 
         multiButton_menu.setOnClickListener(new View.OnClickListener() {
-            // 저장 버튼을 눌렀을 때
+            // Click save button
 
             @Override
             public void onClick(View view) {
 
                 closeMenu();
 
-                // 기존에 저장한 파일 이름 목록을 불러온다.
+                // Load existing file name list
                 final String fileNames = readFileNames();
                 final String[] fileNameList = fileNames.split("\t");
 
-                // Dialog를 생성한다.
+                // Make dialog
                 AlertDialog.Builder adb = fileSavingDialog(fileNameList);
                 adb.show();
             }
@@ -314,13 +313,13 @@ public class SketchActivity extends Activity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 
-                // EditText를 가져온다.
+                // Get EditText
                 final EditText editText = (EditText) dialogView.findViewById(R.id.editText_save);
 
-                // 파일 이름을 가져온다.
+                // Get file name
                 final String fileName = editText.getText().toString();
 
-                // 파일 이름이 없을 시 다시 입력받는다.
+                // If file name is empty, get input again
                 if (fileName.length() == 0) {
                     Toast.makeText(getApplicationContext(), R.string.fileNameEmpty, Toast.LENGTH_SHORT).show();
                     AlertDialog.Builder adb1 = fileSavingDialog(fileNameList);
@@ -328,7 +327,7 @@ public class SketchActivity extends Activity {
                     return;
                 }
 
-                // 이미 존재하는 파일 이름일 시 다시 입력받는다.
+                // If file name already exist, ask whether override or not
                 for (int j = 0; j < fileNameList.length; j++) {
                     if (fileNameList[j].equals(fileName)) {
                         AlertDialog.Builder adb1 = new AlertDialog.Builder(SketchActivity.this);
@@ -366,7 +365,7 @@ public class SketchActivity extends Activity {
     }
 
     private boolean saveFile(String fileName, boolean needAddition) {
-        // 파일을 저장한다.
+        // Save file
         try {
             FileOutputStream fos = getApplicationContext().openFileOutput(fileName, MODE_PRIVATE);
             byte[] data = sketchView.getData();
@@ -377,7 +376,7 @@ public class SketchActivity extends Activity {
             return false;
         }
 
-        // 파일 이름 목록에 파일 이름을 추가해 저장한다.
+        // Add file name on the file name list and save
         if (needAddition) {
             try {
                 FileOutputStream fos = getApplicationContext().openFileOutput(getString(R.string.fileName_saveFileNames), MODE_APPEND);
@@ -393,7 +392,7 @@ public class SketchActivity extends Activity {
     }
 
     private String readFileNames() {
-        // 기존에 저장한 파일 이름 목록을 불러온다.
+        // Load existing file name list
         String fileNames = "";
         try {
             FileInputStream fis = getApplicationContext().openFileInput(getString(R.string.fileName_saveFileNames));

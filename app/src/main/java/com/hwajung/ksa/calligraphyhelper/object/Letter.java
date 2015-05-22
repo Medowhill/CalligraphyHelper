@@ -1,7 +1,6 @@
 package com.hwajung.ksa.calligraphyhelper.object;
 
-import android.content.res.Resources;
-import android.content.res.TypedArray;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -15,7 +14,7 @@ public class Letter {
 
     private static final int BLACK_CONST = 75;
     private static int[] BITMAP_ID;
-    private static Resources resources;
+    private static Context context;
     private int id; // 글자의 고유 ID
     private int resolution;
     private float size = 1; // 글자가 그려지는 배율
@@ -28,22 +27,27 @@ public class Letter {
         this.id = id;
         this.point = point;
 
-        Bitmap primaryBitmap = BitmapFactory.decodeResource(resources, BITMAP_ID[id]);
-        int bitmapWidth = primaryBitmap.getWidth();
-        int bitmapHeight = primaryBitmap.getHeight();
+        try {
+            Bitmap primaryBitmap = BitmapFactory.decodeStream(context.openFileInput(
+                    context.getResources().getString(R.string.fileName_letterResource) + id));
+            int bitmapWidth = primaryBitmap.getWidth();
+            int bitmapHeight = primaryBitmap.getHeight();
 
-        int[] colors = new int[bitmapHeight * bitmapWidth];
-        primaryBitmap.getPixels(colors, 0, bitmapWidth, 0, 0, bitmapWidth, bitmapHeight);
-        primaryBitmap = null;
+            int[] colors = new int[bitmapHeight * bitmapWidth];
+            primaryBitmap.getPixels(colors, 0, bitmapWidth, 0, 0, bitmapWidth, bitmapHeight);
+            primaryBitmap = null;
 
-        for (int i = 0; i < colors.length; i++)
-            if (Color.red(colors[i]) + Color.green(colors[i]) + Color.blue(colors[i]) > BLACK_CONST * 3)
-                colors[i] = Color.argb(0, 255, 255, 255);
-            else
-                colors[i] = Color.argb(255, 0, 0, 0);
+            for (int i = 0; i < colors.length; i++)
+                if (Color.red(colors[i]) + Color.green(colors[i]) + Color.blue(colors[i]) > BLACK_CONST * 3)
+                    colors[i] = Color.argb(0, 255, 255, 255);
+                else
+                    colors[i] = Color.argb(255, 0, 0, 0);
 
-        bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888);
-        bitmap.setPixels(colors, 0, bitmapWidth, 0, 0, bitmapWidth, bitmapHeight);
+            bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888);
+            bitmap.setPixels(colors, 0, bitmapWidth, 0, 0, bitmapWidth, bitmapHeight);
+        } catch (Exception e) {
+            bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+        }
     }
 
     public static Letter getLetter(int id, Point point) {
@@ -66,12 +70,8 @@ public class Letter {
         return letter;
     }
 
-    public static void setResources(Resources resources) {
-        Letter.resources = resources;
-        TypedArray typedArray = resources.obtainTypedArray(R.array.letters_drawable_id_array);
-        BITMAP_ID = new int[typedArray.length()];
-        for (int i = 0; i < typedArray.length(); i++)
-            BITMAP_ID[i] = typedArray.getResourceId(i, -1);
+    public static void setResources(Context context) {
+        Letter.context = context;
     }
 
     public float[] toFloatArray() {

@@ -31,7 +31,7 @@ public class LetterAdapter extends BaseAdapter {
     }
 
     public void load() {
-        // 기존에 저장한 파일 이름 목록을 불러온다.
+        // Load existing file name list
         byte[] data = null;
 
         try {
