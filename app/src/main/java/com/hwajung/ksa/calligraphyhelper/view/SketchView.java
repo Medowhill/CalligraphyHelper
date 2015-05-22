@@ -61,7 +61,7 @@ public class SketchView extends View {
     private int interval = 160;
 
     // Bitmap for button
-    private Bitmap bitmapDelete;
+    private Bitmap bitmapDelete, bitmapEdit;
 
     public SketchView(Context context, AttributeSet attrs) {
         // Constructor
@@ -85,6 +85,7 @@ public class SketchView extends View {
 
         // Bitmap instance
         bitmapDelete = BitmapFactory.decodeResource(getResources(), R.drawable.sketch_button_delete);
+        bitmapEdit = BitmapFactory.decodeResource(getResources(), R.drawable.sketch_button_edit);
 
         // Letter, pointer list initialize
         letters = new ArrayList<>();
@@ -167,6 +168,12 @@ public class SketchView extends View {
                         (int) (bitmapDelete.getWidth() / scale / letter.getSize()),
                         (int) (bitmapDelete.getHeight() / scale / letter.getSize()), false);
                 canvas.drawBitmap(bitmap, x + letter.getWidth() - bitmap.getWidth(), y, null);
+
+                // Draw edit button
+                bitmap = Bitmap.createScaledBitmap(bitmapEdit,
+                        (int) (bitmapEdit.getWidth() / scale / letter.getSize()),
+                        (int) (bitmapEdit.getHeight() / scale / letter.getSize()), false);
+                canvas.drawBitmap(bitmap, x + letter.getWidth() - bitmap.getWidth(), y + letter.getHeight() - bitmap.getHeight(), null);
             }
 
             // Turn back canvas to origin state
@@ -539,6 +546,34 @@ public class SketchView extends View {
         Pointer(int id, Point prev) {
             this.id = id;
             this.prev = prev;
+        }
+    }
+
+    private class LetterChange {
+
+        final static int CHANGE_LETTER = 0, CHANGE_LETTER_ADDITION = 1, CHANGE_LETTER_REMOVE = 2;
+
+        int change, index, id;
+        Point point;
+        float scale, degree;
+
+        LetterChange(int index, Point point, float scale, float degree) {
+            change = CHANGE_LETTER;
+            this.index = index;
+            this.point = new Point(point.x, point.y);
+            this.scale = scale;
+            this.degree = degree;
+        }
+
+        LetterChange(int index) {
+            change = CHANGE_LETTER_ADDITION;
+            this.index = index;
+        }
+
+        LetterChange(int index, int id) {
+            change = CHANGE_LETTER_REMOVE;
+            this.index = index;
+            this.id = id;
         }
     }
 }
