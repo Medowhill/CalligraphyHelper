@@ -45,8 +45,8 @@ public class SketchView extends View {
     private ArrayList<Letter> letters;
 
     // Stack saving change of letter for undo and redo
-    private Stack<float[][]> redoStack, undoStack;
-    private float[][] templateLetterData;
+    private Stack<LetterChange> redoStack, undoStack;
+    private LetterChange templateLetterData;
 
     // x, y direction movement of canvas
     private float xShift, yShift;
@@ -219,12 +219,10 @@ public class SketchView extends View {
                     if (touchLetter(trans, letter) != NO_TOUCH)
                         // If touch selected letter, specify pointer to move the letter
                         pointer.role = Pointer.ROLE_LETTER_MOVE;
-                }
 
-                // Save original letter data
-                templateLetterData = new float[letters.size()][];
-                for (int i = 0; i < letters.size(); i++)
-                    templateLetterData[i] = letters.get(i).toFloatArray();
+                    // Save original letter data
+                    templateLetterData = new LetterChange(selectedLetter, letter.getPoint(), letter.getSize(), letter.getDegree());
+                }
 
                 // Set cannot undo or redo while touching
                 if (sketchActivity != null) {
@@ -272,6 +270,8 @@ public class SketchView extends View {
                         switch (touchLetter(trans, letter)) {
                             case TOUCH_DELETE:
                                 letters.remove(letter);
+                                templateLetterData = new LetterChange(selectedLetter, letter.getId(),
+                                        letter.getPoint(), letter.getSize(), letter.getDegree());
                                 selectedLetter = -1;
                                 break;
                         }
@@ -412,60 +412,59 @@ public class SketchView extends View {
         return NO_TOUCH;
     }
 
-    public void undo() {
-
-        if (!undoStack.empty()) {
-            // If undo stack is not empty
-
-            // Save original state at redo stack
-            templateLetterData = new float[letters.size()][];
-            for (int i = 0; i < letters.size(); i++)
-                templateLetterData[i] = letters.get(i).toFloatArray();
-            redoStack.push(templateLetterData);
+    private void unReDo(Stack<LetterChange> popStack, Stack<LetterChange> pushStack) {
+        if (!popStack.empty()) {
+            // If pop stack is not empty
 
             // Make new letter list by data from undo stack
-            letters.clear();
-            float[][] letterData = undoStack.pop();
-            for (int i = 0; i < letterData.length; i++)
-                letters.add(Letter.getLetter(letterData[i]));
+            LetterChange letterData = popStack.pop();
+            LetterChange data = null;
+            Letter letter;
+
+            switch (letterData.change) {
+                case LetterChange.CHANGE_LETTER:
+                    letter = letters.get(letterData.index);
+                    data = new LetterChange(letterData.index, letter.getPoint(), letter.getSize(), letter.getDegree());
+
+                    letter.setPoint(new Point(letterData.point.x, letterData.point.y));
+                    letter.setDegree(letterData.degree);
+                    letter.setSize(letterData.size);
+                    break;
+                case LetterChange.CHANGE_LETTER_ADDITION:
+                    letter = letters.get(letterData.index);
+                    data = new LetterChange(letterData.index, letter.getId(), letter.getPoint(),
+                            letter.getSize(), letter.getDegree());
+                    letters.remove(letterData.index);
+                    if (selectedLetter == letterData.index)
+                        selectedLetter = -1;
+                    break;
+                case LetterChange.CHANGE_LETTER_REMOVE:
+                    letter = Letter.getLetter(letterData.id, letterData.point);
+                    letter.setSize(letterData.size);
+                    letter.setDegree(letterData.degree);
+                    letters.add(letterData.index, letter);
+                    data = new LetterChange(letterData.index);
+                    break;
+            }
+
+            pushStack.push(data);
 
             // Set undo and redo button
             if (sketchActivity != null) {
-                if (undoStack.empty())
-                    sketchActivity.setUndoButton(false);
-                sketchActivity.setRedoButton(true);
+                sketchActivity.setUndoButton(!undoStack.empty());
+                sketchActivity.setRedoButton(!redoStack.empty());
             }
 
             invalidate();
         }
     }
 
+    public void undo() {
+        unReDo(undoStack, redoStack);
+    }
+
     public void redo() {
-
-        if (!redoStack.empty()) {
-            // If redo stack is not empty
-
-            // Save original state at undo stack
-            templateLetterData = new float[letters.size()][];
-            for (int i = 0; i < letters.size(); i++)
-                templateLetterData[i] = letters.get(i).toFloatArray();
-            undoStack.push(templateLetterData);
-
-            // Make new letter list by data from redo stack
-            letters.clear();
-            float[][] letterData = redoStack.pop();
-            for (int i = 0; i < letterData.length; i++)
-                letters.add(Letter.getLetter(letterData[i]));
-
-            // Set undo and redo button
-            if (sketchActivity != null) {
-                if (redoStack.empty())
-                    sketchActivity.setRedoButton(false);
-                sketchActivity.setUndoButton(true);
-            }
-
-            invalidate();
-        }
+        unReDo(redoStack, undoStack);
     }
 
     public void setSketchActivity(SketchActivity sketchActivity) {
@@ -476,10 +475,9 @@ public class SketchView extends View {
         Letter letter = Letter.getLetter(id, new Point(0, 0));
         if (letter != null) {
             // Save original state at undo stack
-            templateLetterData = new float[letters.size()][];
-            for (int i = 0; i < letters.size(); i++)
-                templateLetterData[i] = letters.get(i).toFloatArray();
+            templateLetterData = new LetterChange(letters.size());
             undoStack.push(templateLetterData);
+            redoStack.clear();
 
             letter.setPoint(new Point(-xShift + screenWidth / 2 / scale - letter.getWidth() / 2, -yShift + screenHeight / 2 / scale - letter.getHeight() / 2));
             letters.add(letter);
@@ -555,13 +553,13 @@ public class SketchView extends View {
 
         int change, index, id;
         Point point;
-        float scale, degree;
+        float size, degree;
 
-        LetterChange(int index, Point point, float scale, float degree) {
+        LetterChange(int index, Point point, float size, float degree) {
             change = CHANGE_LETTER;
             this.index = index;
             this.point = new Point(point.x, point.y);
-            this.scale = scale;
+            this.size = size;
             this.degree = degree;
         }
 
@@ -570,10 +568,13 @@ public class SketchView extends View {
             this.index = index;
         }
 
-        LetterChange(int index, int id) {
+        LetterChange(int index, int id, Point point, float size, float degree) {
             change = CHANGE_LETTER_REMOVE;
             this.index = index;
             this.id = id;
+            this.point = new Point(point.x, point.y);
+            this.size = size;
+            this.degree = degree;
         }
     }
 }
