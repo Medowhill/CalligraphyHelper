@@ -10,7 +10,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Toast;
 
 import com.hwajung.ksa.calligraphyhelper.R;
 import com.hwajung.ksa.calligraphyhelper.activity.SketchActivity;
@@ -221,7 +220,8 @@ public class SketchView extends View {
                         pointer.role = Pointer.ROLE_LETTER_MOVE;
 
                     // Save original letter data
-                    templateLetterData = new LetterChange(selectedLetter, letter.getPoint(), letter.getSize(), letter.getDegree());
+                    templateLetterData = new LetterChange(selectedLetter, letter.getPoint(),
+                            letter.getSize(), letter.getDegree(), letter.getColor());
                 }
 
                 // Set cannot undo or redo while touching
@@ -271,7 +271,7 @@ public class SketchView extends View {
                             case TOUCH_DELETE:
                                 letters.remove(letter);
                                 templateLetterData = new LetterChange(selectedLetter, letter.getId(),
-                                        letter.getPoint(), letter.getSize(), letter.getDegree());
+                                        letter.getPoint(), letter.getSize(), letter.getDegree(), letter.getColor());
                                 selectedLetter = -1;
                                 break;
                             case TOUCH_EDIT:
@@ -428,24 +428,29 @@ public class SketchView extends View {
             switch (letterData.change) {
                 case LetterChange.CHANGE_LETTER:
                     letter = letters.get(letterData.index);
-                    data = new LetterChange(letterData.index, letter.getPoint(), letter.getSize(), letter.getDegree());
+                    data = new LetterChange(letterData.index, letter.getPoint(), letter.getSize(),
+                            letter.getDegree(), letter.getColor());
 
                     letter.setPoint(new Point(letterData.point.x, letterData.point.y));
                     letter.setDegree(letterData.degree);
                     letter.setSize(letterData.size);
+                    letter.setColor(letterData.color);
+                    letter.loadBitmap();
                     break;
                 case LetterChange.CHANGE_LETTER_ADDITION:
                     letter = letters.get(letterData.index);
                     data = new LetterChange(letterData.index, letter.getId(), letter.getPoint(),
-                            letter.getSize(), letter.getDegree());
+                            letter.getSize(), letter.getDegree(), letter.getColor());
                     letters.remove(letterData.index);
                     if (selectedLetter == letterData.index)
                         selectedLetter = -1;
                     break;
                 case LetterChange.CHANGE_LETTER_REMOVE:
-                    letter = Letter.getLetter(letterData.id, letterData.point);
+                    letter = new Letter(letterData.id, letterData.color);
+                    letter.setPoint(new Point(letterData.point.x, letterData.point.y));
                     letter.setSize(letterData.size);
                     letter.setDegree(letterData.degree);
+                    letter.loadBitmap();
                     letters.add(letterData.index, letter);
                     data = new LetterChange(letterData.index);
                     break;
@@ -476,19 +481,21 @@ public class SketchView extends View {
     }
 
     public void addLetter(int id) {
-        Letter letter = Letter.getLetter(id, new Point(0, 0));
-        if (letter != null) {
-            // Save original state at undo stack
-            templateLetterData = new LetterChange(letters.size());
-            undoStack.push(templateLetterData);
-            redoStack.clear();
+        // Save original state at undo stack
+        templateLetterData = new LetterChange(letters.size());
+        undoStack.push(templateLetterData);
+        redoStack.clear();
+        if (sketchActivity != null) {
+            sketchActivity.setUndoButton(true);
+            sketchActivity.setRedoButton(false);
+        }
 
-            letter.setPoint(new Point(-xShift + screenWidth / 2 / scale - letter.getWidth() / 2, -yShift + screenHeight / 2 / scale - letter.getHeight() / 2));
-            letters.add(letter);
-            selectedLetter = letters.size() - 1;
-            invalidate();
-        } else
-            Toast.makeText(getContext(), "메모리가 부족하여 새로운 글씨 이미지를 불러올 수 없습니다.", Toast.LENGTH_SHORT).show();
+        Letter letter = new Letter(id);
+        letter.setPoint(new Point(-xShift + screenWidth / 2 / scale - letter.getWidth() / 2, -yShift + screenHeight / 2 / scale - letter.getHeight() / 2));
+        letters.add(letter);
+        selectedLetter = letters.size() - 1;
+        invalidate();
+
     }
 
     public byte[] getData() {
@@ -512,7 +519,8 @@ public class SketchView extends View {
                     float y = Float.parseFloat(split[3]);
                     float size = Float.parseFloat(split[4]);
                     float degree = Float.parseFloat(split[5]);
-                    Letter letter = Letter.getLetter(id, new Point(x, y));
+                    Letter letter = new Letter(id);
+                    letter.setPoint(new Point(x, y));
                     letter.setSize(size);
                     letter.setDegree(degree);
                     letters.add(letter);
@@ -525,9 +533,21 @@ public class SketchView extends View {
 
     public void modifyLetter(int color, float size, float degree) {
         Letter letter = letters.get(selectedLetter);
+
+        templateLetterData = new LetterChange(selectedLetter, letter.getPoint(), letter.getSize(),
+                letter.getDegree(), letter.getColor());
+        undoStack.push(templateLetterData);
+        redoStack.clear();
+        if (sketchActivity != null) {
+            sketchActivity.setUndoButton(true);
+            sketchActivity.setRedoButton(false);
+        }
+
         letter.setColor(color);
         letter.setSize(size);
         letter.setDegree(degree);
+        letter.loadBitmap();
+
         invalidate();
     }
 
@@ -563,16 +583,17 @@ public class SketchView extends View {
 
         final static int CHANGE_LETTER = 0, CHANGE_LETTER_ADDITION = 1, CHANGE_LETTER_REMOVE = 2;
 
-        int change, index, id;
+        int change, index, color, id;
         Point point;
         float size, degree;
 
-        LetterChange(int index, Point point, float size, float degree) {
+        LetterChange(int index, Point point, float size, float degree, int color) {
             change = CHANGE_LETTER;
             this.index = index;
             this.point = new Point(point.x, point.y);
             this.size = size;
             this.degree = degree;
+            this.color = color;
         }
 
         LetterChange(int index) {
@@ -580,13 +601,14 @@ public class SketchView extends View {
             this.index = index;
         }
 
-        LetterChange(int index, int id, Point point, float size, float degree) {
+        LetterChange(int index, int id, Point point, float size, float degree, int color) {
             change = CHANGE_LETTER_REMOVE;
             this.index = index;
             this.id = id;
             this.point = new Point(point.x, point.y);
             this.size = size;
             this.degree = degree;
+            this.color = color;
         }
     }
 }
