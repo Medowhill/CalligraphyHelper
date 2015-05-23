@@ -274,6 +274,10 @@ public class SketchView extends View {
                                         letter.getPoint(), letter.getSize(), letter.getDegree());
                                 selectedLetter = -1;
                                 break;
+                            case TOUCH_EDIT:
+                                if (sketchActivity != null)
+                                    sketchActivity.showLetterEditDialog(letter.getColor(), letter.getSize(), letter.getDegree());
+                                break;
                         }
                     }
                 }
@@ -516,6 +520,14 @@ public class SketchView extends View {
             }
         }
 
+        invalidate();
+    }
+
+    public void modifyLetter(int color, float size, float degree) {
+        Letter letter = letters.get(selectedLetter);
+        letter.setColor(color);
+        letter.setSize(size);
+        letter.setDegree(degree);
         invalidate();
     }
 

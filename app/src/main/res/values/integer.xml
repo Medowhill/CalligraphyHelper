@@ -3,5 +3,8 @@
 
     <integer name="version">3</integer>
     <integer name="letter_category_num">92</integer>
+    <integer name="color_max">255</integer>
+    <integer name="size_max">499</integer>
+    <integer name="degree_max">360</integer>
 
 </resources>

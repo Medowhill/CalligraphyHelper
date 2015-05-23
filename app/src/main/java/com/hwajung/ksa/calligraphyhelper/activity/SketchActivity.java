@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,7 +15,9 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ScrollView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,7 +27,6 @@ import com.hwajung.ksa.calligraphyhelper.view.MultiButton;
 import com.hwajung.ksa.calligraphyhelper.view.SketchView;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -49,8 +51,6 @@ public class SketchActivity extends Activity {
 
     int menuAnimation = STATE_MENU_INVISIBLE;
     int newLetterAnimation = STATE_MENU_INVISIBLE;
-
-    String fileName = "NoName";
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -400,7 +400,6 @@ public class SketchActivity extends Activity {
             fis.read(data);
             fis.close();
             fileNames = new String(data);
-        } catch (FileNotFoundException fnfException) {
         } catch (IOException ioException) {
             Toast.makeText(getApplicationContext(), getString(R.string.fileLoadingFail), Toast.LENGTH_SHORT).show();
         }
@@ -423,6 +422,165 @@ public class SketchActivity extends Activity {
         button_cancel.setVisibility(View.INVISIBLE);
     }
 
+    public void showLetterEditDialog(int initialColor, float initialSize, float initialDegree) {
+        AlertDialog.Builder adb = new AlertDialog.Builder(SketchActivity.this);
+        final View dialogView = getLayoutInflater().inflate(R.layout.dialog_edit, null);
+        adb.setView(dialogView);
+
+        final ImageView imageView = (ImageView) dialogView.findViewById(R.id.imageView_colorPreview);
+
+        final SeekBar[] seekBars = new SeekBar[5];
+        final EditText[] editTexts = new EditText[5];
+
+        seekBars[0] = (SeekBar) dialogView.findViewById(R.id.seekBar_alpha);
+        seekBars[1] = (SeekBar) dialogView.findViewById(R.id.seekBar_red);
+        seekBars[2] = (SeekBar) dialogView.findViewById(R.id.seekBar_green);
+        seekBars[3] = (SeekBar) dialogView.findViewById(R.id.seekBar_blue);
+        seekBars[4] = (SeekBar) dialogView.findViewById(R.id.seekBar_degree);
+
+        editTexts[0] = (EditText) dialogView.findViewById(R.id.editText_alpha);
+        editTexts[1] = (EditText) dialogView.findViewById(R.id.editText_red);
+        editTexts[2] = (EditText) dialogView.findViewById(R.id.editText_green);
+        editTexts[3] = (EditText) dialogView.findViewById(R.id.editText_blue);
+        editTexts[4] = (EditText) dialogView.findViewById(R.id.editText_degree);
+
+        final SeekBar seekBar = (SeekBar) dialogView.findViewById(R.id.seekBar_size);
+        final EditText editText = (EditText) dialogView.findViewById(R.id.editText_size);
+
+        int alpha = Color.alpha(initialColor);
+        int red = Color.red(initialColor);
+        int green = Color.green(initialColor);
+        int blue = Color.blue(initialColor);
+        int degree = (int) initialDegree;
+
+        final int[] maxValues = {getResources().getInteger(R.integer.color_max), getResources().getInteger(R.integer.color_max),
+                getResources().getInteger(R.integer.color_max), getResources().getInteger(R.integer.color_max), getResources().getInteger(R.integer.degree_max)};
+        final int[] values = {alpha, red, green, blue, degree};
+        imageView.setBackgroundColor(Color.argb(values[0], values[1], values[2], values[3]));
+
+        for (int i = 0; i < values.length; i++) {
+            final int j = i;
+            seekBars[j].setProgress(values[j]);
+            editTexts[j].setText(String.valueOf(values[j]));
+            seekBars[j].setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                    editTexts[j].setText(String.valueOf(i));
+                    values[j] = i;
+                    if (j < 4)
+                        imageView.setBackgroundColor(Color.argb(values[0], values[1], values[2], values[3]));
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+                }
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+                }
+            });
+            editTexts[j].setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean b) {
+                    String text = editTexts[j].getText().toString();
+                    int value;
+                    if (text.length() == 0) {
+                        editTexts[j].setText("0");
+                        value = 0;
+                    } else
+                        value = Integer.parseInt(text);
+
+                    if (value > maxValues[j]) {
+                        value = maxValues[j];
+                        editTexts[j].setText(String.valueOf(value));
+                    }
+
+                    seekBars[j].setProgress(value);
+                }
+            });
+        }
+
+        final float[] size = {(int) (initialSize * 100) / 10.f};
+
+        seekBar.setProgress((int) (size[0] * 10) - 1);
+        editText.setText(String.valueOf(size[0]));
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                size[0] = (i + 1) / 10.f;
+                editText.setText(String.valueOf(size[0]));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+        editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                String text = editText.getText().toString();
+                float value;
+                if (text.length() == 0) {
+                    editText.setText("0");
+                    value = 0;
+                } else
+                    value = Float.parseFloat(text);
+
+                int maxValue = getResources().getInteger(R.integer.size_max);
+
+                if (value > maxValue)
+                    value = maxValue;
+
+                size[0] = (int) (value * 10) / 10.f;
+
+                editText.setText(String.valueOf(size[0]));
+                seekBar.setProgress((int) (size[0] * 10) - 1);
+            }
+        });
+
+        adb.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                for (int j = 0; j < values.length; j++) {
+                    String text = editTexts[j].getText().toString();
+                    int value;
+                    if (text.length() == 0)
+                        value = 0;
+                    else
+                        value = Integer.parseInt(text);
+
+                    if (value > maxValues[j])
+                        value = maxValues[j];
+
+                    values[j] = value;
+                }
+
+                String text = editText.getText().toString();
+                float value;
+                if (text.length() == 0)
+                    value = 0;
+                else
+                    value = Float.parseFloat(text);
+
+                int maxValue = getResources().getInteger(R.integer.size_max);
+
+                if (value > maxValue)
+                    value = maxValue;
+
+                float size = value / 10;
+
+                sketchView.modifyLetter(Color.argb(values[0], values[1], values[2], values[3]), size, values[4]);
+            }
+        });
+        adb.setNegativeButton(R.string.cancel, null);
+        adb.show();
+    }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -437,7 +595,7 @@ public class SketchActivity extends Activity {
                 } else {
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putInt(getResources().getString(R.string.sharedPreferences_version), getResources().getInteger(R.integer.version));
-                    editor.commit();
+                    editor.apply();
                     letterAdapter.load();
                 }
                 break;

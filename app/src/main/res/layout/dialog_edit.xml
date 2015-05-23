@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/sketch_padding_dialog">
+
+    <ScrollView
+        style="@style/sketch_scrollbar_style"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/sketch_margin_color_selection">
+
+                <TextView
+                    android:layout_width="@dimen/sketch_edit_textView"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="@string/colorPreview"
+                    android:textSize="@dimen/sketch_edit_textSize" />
+
+                <ImageView
+                    android:id="@+id/imageView_colorPreview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="#ffffff" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="@dimen/sketch_color_selection"
+                        android:layout_height="@dimen/sketch_color_selection"
+                        android:layout_marginBottom="@dimen/sketch_margin_color_selection"
+                        android:layout_marginLeft="@dimen/sketch_margin_color_selection"
+                        android:background="#ffffff" />
+
+                    <ImageView
+                        android:layout_width="@dimen/sketch_color_selection"
+                        android:layout_height="@dimen/sketch_color_selection"
+                        android:layout_marginBottom="@dimen/sketch_margin_color_selection"
+                        android:layout_marginLeft="@dimen/sketch_margin_color_selection"
+                        android:background="#ffffff" />
+
+                    <ImageView
+                        android:layout_width="@dimen/sketch_color_selection"
+                        android:layout_height="@dimen/sketch_color_selection"
+                        android:layout_marginBottom="@dimen/sketch_margin_color_selection"
+                        android:layout_marginLeft="@dimen/sketch_margin_color_selection"
+                        android:background="#ffffff" />
+
+                    <ImageView
+                        android:layout_width="@dimen/sketch_color_selection"
+                        android:layout_height="@dimen/sketch_color_selection"
+                        android:layout_marginBottom="@dimen/sketch_margin_color_selection"
+                        android:layout_marginLeft="@dimen/sketch_margin_color_selection"
+                        android:background="#ffffff" />
+
+                    <ImageView
+                        android:layout_width="@dimen/sketch_color_selection"
+                        android:layout_height="@dimen/sketch_color_selection"
+                        android:layout_marginBottom="@dimen/sketch_margin_color_selection"
+                        android:layout_marginLeft="@dimen/sketch_margin_color_selection"
+                        android:background="#ffffff" />
+
+                    <ImageView
+                        android:layout_width="@dimen/sketch_color_selection"
+                        android:layout_height="@dimen/sketch_color_selection"
+                        android:layout_marginLeft="@dimen/sketch_margin_color_selection"
+                        android:background="#ffffff" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="@dimen/sketch_color_selection"
+                        android:layout_height="@dimen/sketch_color_selection"
+                        android:layout_marginBottom="@dimen/sketch_margin_color_selection"
+                        android:layout_marginLeft="@dimen/sketch_margin_color_selection"
+                        android:background="#ffffff" />
+
+                    <ImageView
+                        android:layout_width="@dimen/sketch_color_selection"
+                        android:layout_height="@dimen/sketch_color_selection"
+                        android:layout_marginBottom="@dimen/sketch_margin_color_selection"
+                        android:layout_marginLeft="@dimen/sketch_margin_color_selection"
+                        android:background="#ffffff" />
+
+                    <ImageView
+                        android:layout_width="@dimen/sketch_color_selection"
+                        android:layout_height="@dimen/sketch_color_selection"
+                        android:layout_marginBottom="@dimen/sketch_margin_color_selection"
+                        android:layout_marginLeft="@dimen/sketch_margin_color_selection"
+                        android:background="#ffffff" />
+
+                    <ImageView
+                        android:layout_width="@dimen/sketch_color_selection"
+                        android:layout_height="@dimen/sketch_color_selection"
+                        android:layout_marginBottom="@dimen/sketch_margin_color_selection"
+                        android:layout_marginLeft="@dimen/sketch_margin_color_selection"
+                        android:background="#ffffff" />
+
+                    <ImageView
+                        android:layout_width="@dimen/sketch_color_selection"
+                        android:layout_height="@dimen/sketch_color_selection"
+                        android:layout_marginBottom="@dimen/sketch_margin_color_selection"
+                        android:layout_marginLeft="@dimen/sketch_margin_color_selection"
+                        android:background="#ffffff" />
+
+                    <ImageView
+                        android:layout_width="@dimen/sketch_color_selection"
+                        android:layout_height="@dimen/sketch_color_selection"
+                        android:layout_marginLeft="@dimen/sketch_margin_color_selection"
+                        android:background="#ffffff" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="@dimen/sketch_edit_textView"
+                    android:layout_height="wrap_content"
+                    android:text="@string/alpha"
+                    android:textSize="@dimen/sketch_edit_textSize" />
+
+                <SeekBar
+                    android:id="@+id/seekBar_alpha"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:max="@integer/color_max" />
+
+                <EditText
+                    android:id="@+id/editText_alpha"
+                    android:layout_width="@dimen/sketch_edit_editText"
+                    android:layout_height="wrap_content"
+                    android:inputType="number" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="@dimen/sketch_edit_textView"
+                    android:layout_height="wrap_content"
+                    android:text="@string/red"
+                    android:textSize="@dimen/sketch_edit_textSize" />
+
+                <SeekBar
+                    android:id="@+id/seekBar_red"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:max="@integer/color_max" />
+
+                <EditText
+                    android:id="@+id/editText_red"
+                    android:layout_width="@dimen/sketch_edit_editText"
+                    android:layout_height="wrap_content"
+                    android:inputType="number" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="@dimen/sketch_edit_textView"
+                    android:layout_height="wrap_content"
+                    android:text="@string/green"
+                    android:textSize="@dimen/sketch_edit_textSize" />
+
+                <SeekBar
+                    android:id="@+id/seekBar_green"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:max="@integer/color_max" />
+
+                <EditText
+                    android:id="@+id/editText_green"
+                    android:layout_width="@dimen/sketch_edit_editText"
+                    android:layout_height="wrap_content"
+                    android:inputType="number" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="@dimen/sketch_edit_textView"
+                    android:layout_height="wrap_content"
+                    android:text="@string/blue"
+                    android:textSize="@dimen/sketch_edit_textSize" />
+
+                <SeekBar
+                    android:id="@+id/seekBar_blue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:max="@integer/color_max" />
+
+                <EditText
+                    android:id="@+id/editText_blue"
+                    android:layout_width="@dimen/sketch_edit_editText"
+                    android:layout_height="wrap_content"
+                    android:inputType="number" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="@dimen/sketch_edit_textView"
+                    android:layout_height="wrap_content"
+                    android:text="@string/size"
+                    android:textSize="@dimen/sketch_edit_textSize" />
+
+                <SeekBar
+                    android:id="@+id/seekBar_size"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:max="@integer/size_max" />
+
+                <EditText
+                    android:id="@+id/editText_size"
+                    android:layout_width="@dimen/sketch_edit_editText"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="@dimen/sketch_edit_textView"
+                    android:layout_height="wrap_content"
+                    android:text="@string/degree"
+                    android:textSize="@dimen/sketch_edit_textSize" />
+
+                <SeekBar
+                    android:id="@+id/seekBar_degree"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:max="@integer/degree_max" />
+
+                <EditText
+                    android:id="@+id/editText_degree"
+                    android:layout_width="@dimen/sketch_edit_editText"
+                    android:layout_height="wrap_content"
+                    android:inputType="number" />
+            </LinearLayout>
+        </LinearLayout>
+
+
+    </ScrollView>
+
+
+</LinearLayout>

@@ -20,6 +20,7 @@ public class Letter {
     private float size = 1; // 글자가 그려지는 배율
     private float degree = 0; // 글자가 회전한 각도
     private Point point; // 글자의 위치
+    private int color = Color.BLACK;
 
     private Bitmap bitmap; // 비트맵 데이터
 
@@ -35,7 +36,6 @@ public class Letter {
 
             int[] colors = new int[bitmapHeight * bitmapWidth];
             primaryBitmap.getPixels(colors, 0, bitmapWidth, 0, 0, bitmapWidth, bitmapHeight);
-            primaryBitmap = null;
 
             for (int i = 0; i < colors.length; i++)
                 if (Color.red(colors[i]) + Color.green(colors[i]) + Color.blue(colors[i]) > BLACK_CONST * 3)
@@ -102,6 +102,10 @@ public class Letter {
 
     public void setDegree(float degree) {
         this.degree = degree;
+        if (this.degree < 0)
+            this.degree += 360;
+        else
+            this.degree %= 360;
     }
 
     public float getSize() {
@@ -109,6 +113,10 @@ public class Letter {
     }
 
     public void setSize(float size) {
+        if (size < 0.1)
+            size = 0.1f;
+        else if (size > 5)
+            size = 5;
         this.size = size;
     }
 
@@ -122,5 +130,13 @@ public class Letter {
 
     public int getId() {
         return id;
+    }
+
+    public int getColor() {
+        return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
     }
 }

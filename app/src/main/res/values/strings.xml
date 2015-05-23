@@ -20,5 +20,12 @@
     <string name="fileLoadingSuccess">파일을 성공적으로 불러왔습니다.</string>
     <string name="fileNameEmpty">파일 이름을 입력해주세요.</string>
     <string name="fileOverwrite">이미 존재하는 파일 이름입니다. 덮어쓰시겠습니까?</string>
+    <string name="alpha">투명도 (0~255)</string>
+    <string name="red">Red (0~255)</string>
+    <string name="green">Green (0~255)</string>
+    <string name="blue">Blue (0~255)</string>
+    <string name="size">크기 (1~50)</string>
+    <string name="degree">회전 (0~360)</string>
+    <string name="colorPreview">색 미리보기</string>
 
 </resources>
