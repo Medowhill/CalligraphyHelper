@@ -263,6 +263,15 @@ public class SketchActivity extends Activity {
             }
         }, R.drawable.sketch_newletter);
 
+        multiButton_menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //sketchView.setDrawingMode(true);
+                Intent intent = new Intent(getApplicationContext(), CameraActivity.class);
+                startActivity(intent);
+            }
+        }, R.drawable.sketch_draw);
+
     }
 
     private void save() {

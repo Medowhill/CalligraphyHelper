@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -26,13 +27,15 @@ public class SketchView extends View {
     // View to show main sketch screen
 
     private final int TOUCH_LETTER = 0, TOUCH_DELETE = 1, TOUCH_EDIT = 2, NO_TOUCH = 3;
+    private final int MIN_X_SHIFT = 0, MAX_X_SHIFT = 10000, MIN_Y_SHIFT = 0, MAX_Y_SHIFT = 10000;
 
     // Activity which calls this view
     private SketchActivity sketchActivity;
 
     // Paint
     // Letter paint, selected letter border paint, x, y axis paint, grid paint
-    private Paint paint_selected, paint_axis, paint_line;
+    private Paint paint_selected, paint_line;
+    private Paint paint_drawing;
 
     // List of pointer touching the screen
     private ArrayList<Pointer> pointers;
@@ -62,6 +65,10 @@ public class SketchView extends View {
     // Bitmap for button
     private Bitmap bitmapDelete, bitmapEdit;
 
+    private boolean drawingMode = false;
+
+    private ArrayList<Point> drawingPoints;
+
     public SketchView(Context context, AttributeSet attrs) {
         // Constructor
         super(context, attrs);
@@ -76,11 +83,13 @@ public class SketchView extends View {
         paint_selected.setColor(getResources().getColor(R.color.sketch_selected));
         paint_selected.setStyle(Paint.Style.STROKE);
 
-        paint_axis = new Paint();
-        paint_axis.setColor(getResources().getColor(R.color.sketch_axis));
-
         paint_line = new Paint();
         paint_line.setColor(getResources().getColor(R.color.sketch_line));
+
+        paint_drawing = new Paint();
+        paint_drawing.setColor(Color.BLACK);
+        paint_drawing.setStrokeWidth(5);
+        paint_drawing.setStyle(Paint.Style.FILL);
 
         // Bitmap instance
         bitmapDelete = BitmapFactory.decodeResource(getResources(), R.drawable.sketch_button_delete);
@@ -183,7 +192,30 @@ public class SketchView extends View {
 
         }
 
+        if (drawingMode) {
+            paint_drawing.setStrokeWidth(5);
+            int size = 20;
+            double angle = Math.toRadians(-45);
+
+            for (int i = 1; i < drawingPoints.size(); i++) {
+                if (drawingPoints.get(i) != null && drawingPoints.get(i - 1) != null) {
+                    float x1 = drawingPoints.get(i - 1).x;
+                    float y1 = drawingPoints.get(i - 1).y;
+                    float x2 = drawingPoints.get(i).x;
+                    float y2 = drawingPoints.get(i).y;
+                    Path path = new Path();
+                    path.reset();
+                    path.moveTo(x1 + size * (float) Math.cos(angle), y1 + size * (float) Math.sin(angle));
+                    path.lineTo(x2 + size * (float) Math.cos(angle), y2 + size * (float) Math.sin(angle));
+                    path.lineTo(x2 - size * (float) Math.cos(angle), y2 - size * (float) Math.sin(angle));
+                    path.lineTo(x1 - size * (float) Math.cos(angle), y1 - size * (float) Math.sin(angle));
+                    path.lineTo(x1 + size * (float) Math.cos(angle), y1 + size * (float) Math.sin(angle));
+                    canvas.drawPath(path, paint_drawing);
+                }
+            }
+        }
     }
+
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -201,181 +233,196 @@ public class SketchView extends View {
         // absolute coordinate about screen and relative coordinate about canvas
         Point point = new Point(x, y);
         Point trans = point.transform(scale, xPivot, yPivot, xShift, yShift);
-        Point prevTrans;
 
-        Pointer pointer, pointer0, pointer1;
-        Letter letter;
+        if (drawingMode) {
 
-        switch (event.getActionMasked()) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                case MotionEvent.ACTION_MOVE:
+                    drawingPoints.add(trans);
+                    break;
+                case MotionEvent.ACTION_UP:
+                    drawingPoints.add(null);
+                    break;
+            }
 
-            // Primary-pointer down
-            case MotionEvent.ACTION_DOWN:
-                // Make new pointer instance and add to list
-                pointer = new Pointer(id, new Point(x, y));
-                pointers.add(pointer);
+        } else {
+            Point prevTrans;
 
-                if (selectedLetter != -1) {
-                    // If selected letter exists
-                    letter = letters.get(selectedLetter);
-                    if (touchLetter(trans, letter) != NO_TOUCH)
-                        // If touch selected letter, specify pointer to move the letter
-                        pointer.role = Pointer.ROLE_LETTER_MOVE;
+            Pointer pointer, pointer0, pointer1;
+            Letter letter;
 
-                    // Save original letter data
-                    templateLetterData = new LetterChange(selectedLetter, letter.getPoint(),
-                            letter.getSize(), letter.getDegree(), letter.getColor());
-                }
+            switch (event.getActionMasked()) {
 
-                // Set cannot undo or redo while touching
-                if (sketchActivity != null) {
-                    sketchActivity.setRedoButton(false);
-                    sketchActivity.setUndoButton(false);
-                }
+                // Primary-pointer down
+                case MotionEvent.ACTION_DOWN:
+                    // Make new pointer instance and add to list
+                    pointer = new Pointer(id, new Point(x, y));
+                    pointers.add(pointer);
 
-                break;
-
-            // Non-primary-pointer down
-            case MotionEvent.ACTION_POINTER_DOWN:
-                // Remove primary-pointer role
-                pointers.get(0).role = Pointer.ROLE_NONE;
-
-                // Make new pointer instance and add to list
-                pointer = new Pointer(id, new Point(x, y));
-                pointer.role = Pointer.ROLE_NONE;
-                pointers.add(pointer);
-
-                break;
-
-            // Primary-pointer up
-            case MotionEvent.ACTION_UP:
-                // Remove pointer from the list
-                pointer = findPointer(id);
-                pointers.remove(pointer);
-
-                if (pointer.moved <= Pointer.MOVE_LIMIT) {
-                    if (pointer.role == Pointer.ROLE_UNCERTAIN) {
-                        // If pointer does not move and specified, check about role for letter selection
-                        boolean b = true;
-                        for (int i = 0; i < letters.size(); i++) {
-                            letter = letters.get(i);
-                            if (touchLetter(trans, letter) != NO_TOUCH) {
-                                // If pointer touch letter, select letter
-                                selectedLetter = i;
-                                b = false;
-                            }
-                        }
-                        if (b)
-                            // If pointer does not touch any letter, delete selected letter
-                            selectedLetter = -1;
-                    } else if (pointer.role == Pointer.ROLE_LETTER_MOVE) {
+                    if (selectedLetter != -1) {
+                        // If selected letter exists
                         letter = letters.get(selectedLetter);
-                        switch (touchLetter(trans, letter)) {
-                            case TOUCH_DELETE:
-                                letters.remove(letter);
-                                templateLetterData = new LetterChange(selectedLetter, letter.getId(),
-                                        letter.getPoint(), letter.getSize(), letter.getDegree(), letter.getColor());
-                                selectedLetter = -1;
-                                break;
-                            case TOUCH_EDIT:
-                                if (sketchActivity != null)
-                                    sketchActivity.showLetterEditDialog(letter.getColor(), letter.getSize(), letter.getDegree());
-                                break;
-                        }
+                        if (touchLetter(trans, letter) != NO_TOUCH)
+                            // If touch selected letter, specify pointer to move the letter
+                            pointer.role = Pointer.ROLE_LETTER_MOVE;
+
+                        // Save original letter data
+                        templateLetterData = new LetterChange(selectedLetter, letter.getPoint(),
+                                letter.getSize(), letter.getDegree(), letter.getColor());
                     }
-                }
 
-                // If touching is end, undo and redo is available
-                if (sketchActivity != null) {
-                    sketchActivity.setRedoButton(!redoStack.empty());
-                    sketchActivity.setUndoButton(!undoStack.empty());
-                }
-
-                if (!(pointer.role == Pointer.ROLE_CANVAS_MOVE || pointer.role == Pointer.ROLE_UNCERTAIN) && selectedLetter != -1) {
-                    // If letter changed, save original data on stack
-                    undoStack.push(templateLetterData);
-                    redoStack.clear();
+                    // Set cannot undo or redo while touching
                     if (sketchActivity != null) {
                         sketchActivity.setRedoButton(false);
-                        sketchActivity.setUndoButton(true);
-                        sketchActivity.modify();
+                        sketchActivity.setUndoButton(false);
                     }
-                }
 
-                break;
+                    break;
 
-            // Non-primary-pointer up
-            case MotionEvent.ACTION_POINTER_UP:
-                // Remove pointer from the list
-                pointer = findPointer(id);
-                pointers.remove(pointer);
+                // Non-primary-pointer down
+                case MotionEvent.ACTION_POINTER_DOWN:
+                    // Remove primary-pointer role
+                    pointers.get(0).role = Pointer.ROLE_NONE;
 
-                break;
+                    // Make new pointer instance and add to list
+                    pointer = new Pointer(id, new Point(x, y));
+                    pointer.role = Pointer.ROLE_NONE;
+                    pointers.add(pointer);
 
-            // Pointer move
-            case MotionEvent.ACTION_MOVE:
+                    break;
 
-                if (event.getPointerCount() == 1) {
-                    // If pointer is one, canvas or letter translate
-
-                    // Find pointer instance and record movement
+                // Primary-pointer up
+                case MotionEvent.ACTION_UP:
+                    // Remove pointer from the list
                     pointer = findPointer(id);
-                    pointer.moved++;
+                    pointers.remove(pointer);
 
-                    // If pointer does not specified and move enough, specify pointer to move canvas or letter
-                    if (pointer.role == Pointer.ROLE_UNCERTAIN && pointer.moved > Pointer.MOVE_LIMIT)
-                        pointer.role = Pointer.ROLE_CANVAS_MOVE;
-
-                    // Pointer's previous coordinate's relative coordinate
-                    prevTrans = pointer.prev.transform(scale, xPivot, yPivot, xShift, yShift);
-
-                    switch (pointer.role) {
-                        case Pointer.ROLE_LETTER_MOVE:
-                            // If pointer is for letter's translation, change letter's coordinate
+                    if (pointer.moved <= Pointer.MOVE_LIMIT) {
+                        if (pointer.role == Pointer.ROLE_UNCERTAIN) {
+                            // If pointer does not move and specified, check about role for letter selection
+                            boolean b = true;
+                            for (int i = 0; i < letters.size(); i++) {
+                                letter = letters.get(i);
+                                if (touchLetter(trans, letter) != NO_TOUCH) {
+                                    // If pointer touch letter, select letter
+                                    selectedLetter = i;
+                                    b = false;
+                                }
+                            }
+                            if (b)
+                                // If pointer does not touch any letter, delete selected letter
+                                selectedLetter = -1;
+                        } else if (pointer.role == Pointer.ROLE_LETTER_MOVE) {
                             letter = letters.get(selectedLetter);
-                            letter.setPoint(new Point(letter.getPoint().x + trans.x - prevTrans.x,
-                                    letter.getPoint().y + trans.y - prevTrans.y));
-                            break;
-                        case Pointer.ROLE_CANVAS_MOVE:
-                            // If pointer is for canvas's translation, change canvas's coordinate
-                            xShift += trans.x - prevTrans.x;
-                            yShift += trans.y - prevTrans.y;
-                            break;
-                    }
-
-                    pointer.prev = point;
-                } else {
-                    // If pointers are more than 2, extend, reduce, and rotate by first 2 pointer
-                    pointer0 = pointers.get(0);
-                    pointer1 = pointers.get(1);
-
-                    // Distance and degree of coordinates before movement
-                    float prevDistance = Point.distance(pointer0.prev, pointer1.prev);
-                    float prevDegree = Point.degree(pointer0.prev, pointer1.prev);
-
-                    // Record movement
-                    for (int i = 0; i < event.getPointerCount(); i++) {
-                        pointers.get(i).prev = new Point(event.getX(i), event.getY(i));
-                    }
-
-                    // Distance and degree of coordinates after movement
-                    float distance = Point.distance(pointer0.prev, pointer1.prev);
-                    float degree = Point.degree(pointer0.prev, pointer1.prev);
-
-                    // Act only the values before movement are meaningful
-                    if (prevDistance != 0 && distance != 0) {
-                        if (selectedLetter == -1) {
-                            // If letter is not selected, change scale of canvas
-                            scale *= distance / prevDistance;
-                        } else {
-                            // If letter is selected, change scale and degree of letter
-                            letter = letters.get(selectedLetter);
-                            letter.setSize(letter.getSize() * distance / prevDistance);
-                            letter.setDegree(letter.getDegree() + degree - prevDegree);
+                            switch (touchLetter(trans, letter)) {
+                                case TOUCH_DELETE:
+                                    letters.remove(letter);
+                                    templateLetterData = new LetterChange(selectedLetter, letter.getId(),
+                                            letter.getPoint(), letter.getSize(), letter.getDegree(), letter.getColor());
+                                    selectedLetter = -1;
+                                    break;
+                                case TOUCH_EDIT:
+                                    if (sketchActivity != null)
+                                        sketchActivity.showLetterEditDialog(letter.getColor(), letter.getSize(), letter.getDegree());
+                                    break;
+                            }
                         }
                     }
-                }
 
-                break;
+                    // If touching is end, undo and redo is available
+                    if (sketchActivity != null) {
+                        sketchActivity.setRedoButton(!redoStack.empty());
+                        sketchActivity.setUndoButton(!undoStack.empty());
+                    }
+
+                    if (!(pointer.role == Pointer.ROLE_CANVAS_MOVE || pointer.role == Pointer.ROLE_UNCERTAIN) && selectedLetter != -1) {
+                        // If letter changed, save original data on stack
+                        undoStack.push(templateLetterData);
+                        redoStack.clear();
+                        if (sketchActivity != null) {
+                            sketchActivity.setRedoButton(false);
+                            sketchActivity.setUndoButton(true);
+                            sketchActivity.modify();
+                        }
+                    }
+
+                    break;
+
+                // Non-primary-pointer up
+                case MotionEvent.ACTION_POINTER_UP:
+                    // Remove pointer from the list
+                    pointer = findPointer(id);
+                    pointers.remove(pointer);
+
+                    break;
+
+                // Pointer move
+                case MotionEvent.ACTION_MOVE:
+
+                    if (event.getPointerCount() == 1) {
+                        // If pointer is one, canvas or letter translate
+
+                        // Find pointer instance and record movement
+                        pointer = findPointer(id);
+                        pointer.moved++;
+
+                        // If pointer does not specified and move enough, specify pointer to move canvas or letter
+                        if (pointer.role == Pointer.ROLE_UNCERTAIN && pointer.moved > Pointer.MOVE_LIMIT)
+                            pointer.role = Pointer.ROLE_CANVAS_MOVE;
+
+                        // Pointer's previous coordinate's relative coordinate
+                        prevTrans = pointer.prev.transform(scale, xPivot, yPivot, xShift, yShift);
+
+                        switch (pointer.role) {
+                            case Pointer.ROLE_LETTER_MOVE:
+                                // If pointer is for letter's translation, change letter's coordinate
+                                letter = letters.get(selectedLetter);
+                                letter.setPoint(new Point(letter.getPoint().x + trans.x - prevTrans.x,
+                                        letter.getPoint().y + trans.y - prevTrans.y));
+                                break;
+                            case Pointer.ROLE_CANVAS_MOVE:
+                                // If pointer is for canvas's translation, change canvas's coordinate
+                                xShift += trans.x - prevTrans.x;
+                                yShift += trans.y - prevTrans.y;
+                                break;
+                        }
+
+                        pointer.prev = point;
+                    } else {
+                        // If pointers are more than 2, extend, reduce, and rotate by first 2 pointer
+                        pointer0 = pointers.get(0);
+                        pointer1 = pointers.get(1);
+
+                        // Distance and degree of coordinates before movement
+                        float prevDistance = Point.distance(pointer0.prev, pointer1.prev);
+                        float prevDegree = Point.degree(pointer0.prev, pointer1.prev);
+
+                        // Record movement
+                        for (int i = 0; i < event.getPointerCount(); i++) {
+                            pointers.get(i).prev = new Point(event.getX(i), event.getY(i));
+                        }
+
+                        // Distance and degree of coordinates after movement
+                        float distance = Point.distance(pointer0.prev, pointer1.prev);
+                        float degree = Point.degree(pointer0.prev, pointer1.prev);
+
+                        // Act only the values before movement are meaningful
+                        if (prevDistance != 0 && distance != 0) {
+                            if (selectedLetter == -1) {
+                                // If letter is not selected, change scale of canvas
+                                scale *= distance / prevDistance;
+                            } else {
+                                // If letter is selected, change scale and degree of letter
+                                letter = letters.get(selectedLetter);
+                                letter.setSize(letter.getSize() * distance / prevDistance);
+                                letter.setDegree(letter.getDegree() + degree - prevDegree);
+                            }
+                        }
+                    }
+
+                    break;
+            }
         }
 
         invalidate();
@@ -569,6 +616,11 @@ public class SketchView extends View {
         letter.loadBitmap();
 
         invalidate();
+    }
+
+    public void setDrawingMode(boolean drawingMode) {
+        this.drawingMode = drawingMode;
+        drawingPoints = new ArrayList<>();
     }
 
     // Pointer class

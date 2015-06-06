@@ -98,6 +98,7 @@
         android:layout_gravity="top|right"
         android:background="#FFFFFF"
         android:text="@string/defaultFileName"
+        android:textColor="#111111"
         android:textSize="20sp" />
 
 </FrameLayout>

@@ -36,5 +36,6 @@
     <string name="fileAlreadyOpen">현재 작업 중인 파일입니다.</string>
     <string name="save">저장</string>
     <string name="open">열기</string>
+    <string name="sensitivity">민감도</string>
 
 </resources>
