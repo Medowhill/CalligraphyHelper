@@ -187,6 +187,8 @@ public class SketchView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        Log.i("TEST", undoStack.size() + "");
+
         // Make activity's menu invisible
         if (sketchActivity != null)
             sketchActivity.closeMenu();
@@ -288,7 +290,7 @@ public class SketchView extends View {
                     sketchActivity.setUndoButton(!undoStack.empty());
                 }
 
-                if (!(pointer.role == Pointer.ROLE_CANVAS_MOVE || pointer.role == Pointer.ROLE_UNCERTAIN)) {
+                if (!(pointer.role == Pointer.ROLE_CANVAS_MOVE || pointer.role == Pointer.ROLE_UNCERTAIN) && selectedLetter != -1) {
                     // If letter changed, save original data on stack
                     undoStack.push(templateLetterData);
                     redoStack.clear();
@@ -505,8 +507,21 @@ public class SketchView extends View {
         return data.getBytes();
     }
 
-    public void setDataByByteArray(byte[] data) {
+    public void clear() {
         letters.clear();
+        xShift = 0;
+        yShift = 0;
+        scale = 1;
+        selectedLetter = -1;
+
+        undoStack.clear();
+        redoStack.clear();
+        sketchActivity.setRedoButton(false);
+        sketchActivity.setUndoButton(false);
+    }
+
+    public void setDataByByteArray(byte[] data) {
+        clear();
 
         String stringData = new String(data);
         String[] datas = stringData.split("\n");

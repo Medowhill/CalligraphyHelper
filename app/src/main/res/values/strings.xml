@@ -27,5 +27,11 @@
     <string name="size">크기 (1~50)</string>
     <string name="degree">회전 (0~360)</string>
     <string name="colorPreview">색 미리보기</string>
+    <string name="defaultFileName">제목없음</string>
+    <string name="wantToSave">기존에 작업하던 내용을 저장하시겠습니까?</string>
+    <string name="delete">삭제</string>
+    <string name="fileDeleteSuccess">파일을 성공적으로 삭제했습니다.</string>
+    <string name="fileDeleteFail">파일을 삭제하는데 실패했습니다.</string>
+    <string name="fileAlreadyOpen">현재 작업 중인 파일입니다.</string>
 
 </resources>

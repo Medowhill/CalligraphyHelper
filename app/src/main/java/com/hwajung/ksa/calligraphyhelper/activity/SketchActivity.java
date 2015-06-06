@@ -52,6 +52,11 @@ public class SketchActivity extends Activity {
     int menuAnimation = STATE_MENU_INVISIBLE;
     int newLetterAnimation = STATE_MENU_INVISIBLE;
 
+    String currentFileName;
+    boolean isNewFile = true;
+
+    int selected = 0;
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +73,11 @@ public class SketchActivity extends Activity {
         gridView_letter = (GridView) findViewById(R.id.gridView_letter);
         scrollView_menu = (ScrollView) findViewById(R.id.scrollView_menu);
         textView_fileName = (TextView) findViewById(R.id.textView_fileName);
+
+        currentFileName = getString(R.string.defaultFileName);
+
+        button_redo.setEnabled(false);
+        button_undo.setEnabled(false);
 
         letterAdapter = new LetterAdapter(this);
 
@@ -243,13 +253,54 @@ public class SketchActivity extends Activity {
                 AlertDialog.Builder adb = new AlertDialog.Builder(SketchActivity.this);
                 adb.setTitle(R.string.openFile);
 
-                adb.setItems(split, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        String fileName = split[whichButton];
-                        if (loadFile(fileName))
-                            Toast.makeText(getApplicationContext(), R.string.fileLoadingSuccess, Toast.LENGTH_SHORT).show();
-                        else
-                            Toast.makeText(getApplicationContext(), R.string.fileLoadingFail, Toast.LENGTH_SHORT).show();
+                selected = 0;
+                adb.setSingleChoiceItems(split, 0, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        selected = i;
+                    }
+                });
+
+                adb.setPositiveButton(R.string.openFile, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        String fileName = split[selected];
+                        if (!currentFileName.equals(fileName)) {
+                            if (loadFile(fileName)) {
+                                Toast.makeText(getApplicationContext(), R.string.fileLoadingSuccess, Toast.LENGTH_SHORT).show();
+                                currentFileName = fileName;
+                                textView_fileName.setText(fileName);
+                                isNewFile = false;
+                            } else
+                                Toast.makeText(getApplicationContext(), R.string.fileLoadingFail, Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getApplicationContext(), R.string.fileAlreadyOpen, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+                adb.setNeutralButton(R.string.delete, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        String fileName = split[selected];
+                        if (!currentFileName.equals(fileName)) {
+                            try {
+                                FileOutputStream fos = getApplicationContext().openFileOutput(getString(R.string.fileName_saveFileNames), MODE_PRIVATE);
+                                String names = "";
+                                for (int j = 0; j < split.length; j++)
+                                    if (selected != j)
+                                        names += split[j] + "\t";
+                                byte[] data = names.getBytes();
+                                fos.write(data);
+                                fos.flush();
+                                fos.close();
+                                Toast.makeText(getApplicationContext(), R.string.fileDeleteSuccess, Toast.LENGTH_SHORT).show();
+                            } catch (IOException ioe) {
+                                Toast.makeText(getApplicationContext(), R.string.fileDeleteFail, Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Toast.makeText(getApplicationContext(), R.string.fileAlreadyOpen, Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
 
@@ -266,13 +317,21 @@ public class SketchActivity extends Activity {
 
                 closeMenu();
 
-                // Load existing file name list
-                final String fileNames = readFileNames();
-                final String[] fileNameList = fileNames.split("\t");
+                if (isNewFile) {
 
-                // Make dialog
-                AlertDialog.Builder adb = fileSavingDialog(fileNameList);
-                adb.show();
+                    // Load existing file name list
+                    final String fileNames = readFileNames();
+                    final String[] fileNameList = fileNames.split("\t");
+
+                    // Make dialog
+                    AlertDialog.Builder adb = fileSavingDialog(fileNameList, false);
+                    adb.show();
+                } else {
+                    if (saveFile(currentFileName, false)) {
+                        Toast.makeText(getApplicationContext(), R.string.fileSavingSuccess, Toast.LENGTH_SHORT).show();
+                    } else
+                        Toast.makeText(getApplicationContext(), R.string.fileSavingFail, Toast.LENGTH_SHORT).show();
+                }
             }
         }, R.drawable.sketch_save);
 
@@ -285,6 +344,55 @@ public class SketchActivity extends Activity {
             }
         }, R.drawable.sketch_newletter);
 
+        multiButton_menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sketchView.clear();
+                sketchView.invalidate();
+                isNewFile = true;
+                currentFileName = getString(R.string.defaultFileName);
+                textView_fileName.setText(currentFileName);
+            }
+        }, R.drawable.sketch_new);
+
+    }
+
+    private void wantToSave(final boolean forFinish) {
+        if (button_undo.isEnabled()) {
+            AlertDialog.Builder adb = new AlertDialog.Builder(SketchActivity.this);
+            adb.setMessage(R.string.wantToSave);
+            adb.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    if (forFinish)
+                        finish();
+                }
+            });
+            adb.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    if (isNewFile) {
+
+                        // Load existing file name list
+                        final String fileNames = readFileNames();
+                        final String[] fileNameList = fileNames.split("\t");
+
+                        // Make dialog
+                        AlertDialog.Builder adb = fileSavingDialog(fileNameList, forFinish);
+                        adb.show();
+                    } else {
+                        if (saveFile(currentFileName, false)) {
+                            Toast.makeText(getApplicationContext(), R.string.fileSavingSuccess, Toast.LENGTH_SHORT).show();
+                        } else
+                            Toast.makeText(getApplicationContext(), R.string.fileSavingFail, Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+            adb.setNeutralButton(R.string.cancel, null);
+            adb.show();
+        } else {
+            finish();
+        }
     }
 
     private boolean loadFile(String fileName) {
@@ -301,7 +409,7 @@ public class SketchActivity extends Activity {
         return true;
     }
 
-    private AlertDialog.Builder fileSavingDialog(String[] fileNameList_) {
+    private AlertDialog.Builder fileSavingDialog(String[] fileNameList_, final boolean forFinish) {
 
         AlertDialog.Builder adb = new AlertDialog.Builder(SketchActivity.this);
         adb.setTitle(R.string.saveFile);
@@ -309,12 +417,13 @@ public class SketchActivity extends Activity {
         adb.setView(dialogView);
         final String[] fileNameList = fileNameList_;
 
+        // Get EditText
+        final EditText editText = (EditText) dialogView.findViewById(R.id.editText_save);
+        editText.setText(currentFileName);
+
         adb.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-
-                // Get EditText
-                final EditText editText = (EditText) dialogView.findViewById(R.id.editText_save);
 
                 // Get file name
                 final String fileName = editText.getText().toString();
@@ -322,7 +431,7 @@ public class SketchActivity extends Activity {
                 // If file name is empty, get input again
                 if (fileName.length() == 0) {
                     Toast.makeText(getApplicationContext(), R.string.fileNameEmpty, Toast.LENGTH_SHORT).show();
-                    AlertDialog.Builder adb1 = fileSavingDialog(fileNameList);
+                    AlertDialog.Builder adb1 = fileSavingDialog(fileNameList, forFinish);
                     adb1.show();
                     return;
                 }
@@ -335,16 +444,18 @@ public class SketchActivity extends Activity {
                         adb1.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                if (saveFile(fileName, false))
+                                if (saveFile(fileName, false)) {
                                     Toast.makeText(getApplicationContext(), R.string.fileSavingSuccess, Toast.LENGTH_SHORT).show();
-                                else
+                                    if (forFinish)
+                                        finish();
+                                } else
                                     Toast.makeText(getApplicationContext(), R.string.fileSavingFail, Toast.LENGTH_SHORT).show();
                             }
                         });
                         adb1.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                AlertDialog.Builder adb2 = fileSavingDialog(fileNameList);
+                                AlertDialog.Builder adb2 = fileSavingDialog(fileNameList, forFinish);
                                 adb2.show();
                             }
                         });
@@ -353,9 +464,11 @@ public class SketchActivity extends Activity {
                     }
                 }
 
-                if (saveFile(fileName, true))
+                if (saveFile(fileName, true)) {
                     Toast.makeText(getApplicationContext(), R.string.fileSavingSuccess, Toast.LENGTH_SHORT).show();
-                else
+                    if (forFinish)
+                        finish();
+                } else
                     Toast.makeText(getApplicationContext(), R.string.fileSavingFail, Toast.LENGTH_SHORT).show();
             }
         });
@@ -583,7 +696,41 @@ public class SketchActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        if (button_undo.isEnabled()) {
+            AlertDialog.Builder adb = new AlertDialog.Builder(SketchActivity.this);
+            adb.setTitle(R.string.finish);
+            adb.setMessage(R.string.wantToSave);
+            adb.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    finish();
+                }
+            });
+            adb.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    if (isNewFile) {
+
+                        // Load existing file name list
+                        final String fileNames = readFileNames();
+                        final String[] fileNameList = fileNames.split("\t");
+
+                        // Make dialog
+                        AlertDialog.Builder adb = fileSavingDialog(fileNameList, true);
+                        adb.show();
+                    } else {
+                        if (saveFile(currentFileName, false)) {
+                            Toast.makeText(getApplicationContext(), R.string.fileSavingSuccess, Toast.LENGTH_SHORT).show();
+                        } else
+                            Toast.makeText(getApplicationContext(), R.string.fileSavingFail, Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+            adb.setNeutralButton(R.string.cancel, null);
+            adb.show();
+        } else {
+            finish();
+        }
     }
 
     @Override
