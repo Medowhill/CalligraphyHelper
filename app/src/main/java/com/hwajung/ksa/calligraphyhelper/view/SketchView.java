@@ -297,6 +297,7 @@ public class SketchView extends View {
                     if (sketchActivity != null) {
                         sketchActivity.setRedoButton(false);
                         sketchActivity.setUndoButton(true);
+                        sketchActivity.modify();
                     }
                 }
 
@@ -471,6 +472,8 @@ public class SketchView extends View {
     }
 
     public void undo() {
+        if (sketchActivity != null)
+            sketchActivity.modify();
         unReDo(undoStack, redoStack);
     }
 
@@ -490,6 +493,7 @@ public class SketchView extends View {
         if (sketchActivity != null) {
             sketchActivity.setUndoButton(true);
             sketchActivity.setRedoButton(false);
+            sketchActivity.modify();
         }
 
         Letter letter = new Letter(id);
@@ -556,6 +560,7 @@ public class SketchView extends View {
         if (sketchActivity != null) {
             sketchActivity.setUndoButton(true);
             sketchActivity.setRedoButton(false);
+            sketchActivity.modify();
         }
 
         letter.setColor(color);
