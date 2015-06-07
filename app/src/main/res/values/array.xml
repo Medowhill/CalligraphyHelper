@@ -2,113 +2,1160 @@
 <resources>
 
     <string-array name="letters_drawable_id_array">
+        <item>@drawable/latin_u_1_0</item>
         <item>@drawable/latin_u_1_1</item>
+        <item>@drawable/latin_u_1_2</item>
+        <item>@drawable/latin_u_1_3</item>
+        <item>@drawable/latin_u_1_4</item>
+        <item>@drawable/latin_u_1_5</item>
+        <item>@drawable/latin_u_1_6</item>
+        <item>@drawable/latin_u_1_8</item>
+        <item>@drawable/latin_u_1_9</item>
+        <item>@drawable/latin_u_1_10</item>
+        <item>@drawable/latin_u_2_0</item>
         <item>@drawable/latin_u_2_1</item>
+        <item>@drawable/latin_u_2_2</item>
+        <item>@drawable/latin_u_2_3</item>
+        <item>@drawable/latin_u_2_4</item>
+        <item>@drawable/latin_u_2_5</item>
+        <item>@drawable/latin_u_2_6</item>
+        <item>@drawable/latin_u_2_8</item>
+        <item>@drawable/latin_u_2_9</item>
+        <item>@drawable/latin_u_2_10</item>
+        <item>@drawable/latin_u_3_0</item>
         <item>@drawable/latin_u_3_1</item>
+        <item>@drawable/latin_u_3_2</item>
+        <item>@drawable/latin_u_3_3</item>
+        <item>@drawable/latin_u_3_4</item>
+        <item>@drawable/latin_u_3_5</item>
+        <item>@drawable/latin_u_3_6</item>
+        <item>@drawable/latin_u_3_8</item>
+        <item>@drawable/latin_u_3_9</item>
+        <item>@drawable/latin_u_3_10</item>
+        <item>@drawable/latin_u_4_0</item>
         <item>@drawable/latin_u_4_1</item>
+        <item>@drawable/latin_u_4_2</item>
+        <item>@drawable/latin_u_4_3</item>
+        <item>@drawable/latin_u_4_4</item>
+        <item>@drawable/latin_u_4_5</item>
+        <item>@drawable/latin_u_4_6</item>
+        <item>@drawable/latin_u_4_8</item>
+        <item>@drawable/latin_u_4_9</item>
+        <item>@drawable/latin_u_4_10</item>
+        <item>@drawable/latin_u_5_0</item>
         <item>@drawable/latin_u_5_1</item>
+        <item>@drawable/latin_u_5_2</item>
+        <item>@drawable/latin_u_5_3</item>
+        <item>@drawable/latin_u_5_4</item>
+        <item>@drawable/latin_u_5_5</item>
+        <item>@drawable/latin_u_5_6</item>
+        <item>@drawable/latin_u_5_8</item>
+        <item>@drawable/latin_u_5_9</item>
+        <item>@drawable/latin_u_5_10</item>
+        <item>@drawable/latin_u_6_0</item>
         <item>@drawable/latin_u_6_1</item>
+        <item>@drawable/latin_u_6_2</item>
+        <item>@drawable/latin_u_6_3</item>
+        <item>@drawable/latin_u_6_4</item>
+        <item>@drawable/latin_u_6_5</item>
+        <item>@drawable/latin_u_6_6</item>
+        <item>@drawable/latin_u_6_8</item>
+        <item>@drawable/latin_u_6_9</item>
+        <item>@drawable/latin_u_6_10</item>
+        <item>@drawable/latin_u_7_0</item>
         <item>@drawable/latin_u_7_1</item>
+        <item>@drawable/latin_u_7_2</item>
+        <item>@drawable/latin_u_7_3</item>
+        <item>@drawable/latin_u_7_4</item>
+        <item>@drawable/latin_u_7_5</item>
+        <item>@drawable/latin_u_7_6</item>
+        <item>@drawable/latin_u_7_8</item>
+        <item>@drawable/latin_u_7_9</item>
+        <item>@drawable/latin_u_7_10</item>
+        <item>@drawable/latin_u_8_0</item>
         <item>@drawable/latin_u_8_1</item>
+        <item>@drawable/latin_u_8_2</item>
+        <item>@drawable/latin_u_8_3</item>
+        <item>@drawable/latin_u_8_4</item>
+        <item>@drawable/latin_u_8_5</item>
+        <item>@drawable/latin_u_8_6</item>
+        <item>@drawable/latin_u_8_8</item>
+        <item>@drawable/latin_u_8_9</item>
+        <item>@drawable/latin_u_8_10</item>
+        <item>@drawable/latin_u_9_0</item>
         <item>@drawable/latin_u_9_1</item>
+        <item>@drawable/latin_u_9_2</item>
+        <item>@drawable/latin_u_9_3</item>
+        <item>@drawable/latin_u_9_4</item>
+        <item>@drawable/latin_u_9_5</item>
+        <item>@drawable/latin_u_9_6</item>
+        <item>@drawable/latin_u_9_8</item>
+        <item>@drawable/latin_u_9_9</item>
+        <item>@drawable/latin_u_9_10</item>
+        <item>@drawable/latin_u_10_0</item>
         <item>@drawable/latin_u_10_1</item>
+        <item>@drawable/latin_u_10_2</item>
+        <item>@drawable/latin_u_10_3</item>
+        <item>@drawable/latin_u_10_4</item>
+        <item>@drawable/latin_u_10_5</item>
+        <item>@drawable/latin_u_10_6</item>
+        <item>@drawable/latin_u_10_8</item>
+        <item>@drawable/latin_u_10_9</item>
+        <item>@drawable/latin_u_10_10</item>
+        <item>@drawable/latin_u_11_0</item>
         <item>@drawable/latin_u_11_1</item>
+        <item>@drawable/latin_u_11_2</item>
+        <item>@drawable/latin_u_11_3</item>
+        <item>@drawable/latin_u_11_4</item>
+        <item>@drawable/latin_u_11_5</item>
+        <item>@drawable/latin_u_11_6</item>
+        <item>@drawable/latin_u_11_8</item>
+        <item>@drawable/latin_u_11_9</item>
+        <item>@drawable/latin_u_11_10</item>
+        <item>@drawable/latin_u_12_0</item>
         <item>@drawable/latin_u_12_1</item>
+        <item>@drawable/latin_u_12_2</item>
+        <item>@drawable/latin_u_12_3</item>
+        <item>@drawable/latin_u_12_4</item>
+        <item>@drawable/latin_u_12_5</item>
+        <item>@drawable/latin_u_12_6</item>
+        <item>@drawable/latin_u_12_8</item>
+        <item>@drawable/latin_u_12_9</item>
+        <item>@drawable/latin_u_12_10</item>
+        <item>@drawable/latin_u_13_0</item>
         <item>@drawable/latin_u_13_1</item>
+        <item>@drawable/latin_u_13_2</item>
+        <item>@drawable/latin_u_13_3</item>
+        <item>@drawable/latin_u_13_4</item>
+        <item>@drawable/latin_u_13_5</item>
+        <item>@drawable/latin_u_13_6</item>
+        <item>@drawable/latin_u_13_8</item>
+        <item>@drawable/latin_u_13_9</item>
+        <item>@drawable/latin_u_13_10</item>
+        <item>@drawable/latin_u_14_0</item>
         <item>@drawable/latin_u_14_1</item>
+        <item>@drawable/latin_u_14_2</item>
+        <item>@drawable/latin_u_14_3</item>
+        <item>@drawable/latin_u_14_4</item>
+        <item>@drawable/latin_u_14_5</item>
+        <item>@drawable/latin_u_14_6</item>
+        <item>@drawable/latin_u_14_8</item>
+        <item>@drawable/latin_u_14_9</item>
+        <item>@drawable/latin_u_14_10</item>
+        <item>@drawable/latin_u_15_0</item>
         <item>@drawable/latin_u_15_1</item>
+        <item>@drawable/latin_u_15_2</item>
+        <item>@drawable/latin_u_15_3</item>
+        <item>@drawable/latin_u_15_4</item>
+        <item>@drawable/latin_u_15_5</item>
+        <item>@drawable/latin_u_15_6</item>
+        <item>@drawable/latin_u_15_8</item>
+        <item>@drawable/latin_u_15_9</item>
+        <item>@drawable/latin_u_15_10</item>
+        <item>@drawable/latin_u_16_0</item>
         <item>@drawable/latin_u_16_1</item>
+        <item>@drawable/latin_u_16_2</item>
+        <item>@drawable/latin_u_16_3</item>
+        <item>@drawable/latin_u_16_4</item>
+        <item>@drawable/latin_u_16_5</item>
+        <item>@drawable/latin_u_16_6</item>
+        <item>@drawable/latin_u_16_8</item>
+        <item>@drawable/latin_u_16_9</item>
+        <item>@drawable/latin_u_16_10</item>
+        <item>@drawable/latin_u_17_0</item>
         <item>@drawable/latin_u_17_1</item>
+        <item>@drawable/latin_u_17_2</item>
+        <item>@drawable/latin_u_17_3</item>
+        <item>@drawable/latin_u_17_4</item>
+        <item>@drawable/latin_u_17_5</item>
+        <item>@drawable/latin_u_17_6</item>
+        <item>@drawable/latin_u_17_8</item>
+        <item>@drawable/latin_u_17_9</item>
+        <item>@drawable/latin_u_17_10</item>
+        <item>@drawable/latin_u_18_0</item>
         <item>@drawable/latin_u_18_1</item>
+        <item>@drawable/latin_u_18_2</item>
+        <item>@drawable/latin_u_18_3</item>
+        <item>@drawable/latin_u_18_4</item>
+        <item>@drawable/latin_u_18_5</item>
+        <item>@drawable/latin_u_18_6</item>
+        <item>@drawable/latin_u_18_8</item>
+        <item>@drawable/latin_u_18_9</item>
+        <item>@drawable/latin_u_18_10</item>
+        <item>@drawable/latin_u_19_0</item>
         <item>@drawable/latin_u_19_1</item>
+        <item>@drawable/latin_u_19_2</item>
+        <item>@drawable/latin_u_19_3</item>
+        <item>@drawable/latin_u_19_4</item>
+        <item>@drawable/latin_u_19_5</item>
+        <item>@drawable/latin_u_19_6</item>
+        <item>@drawable/latin_u_19_8</item>
+        <item>@drawable/latin_u_19_9</item>
+        <item>@drawable/latin_u_19_10</item>
+        <item>@drawable/latin_u_20_0</item>
         <item>@drawable/latin_u_20_1</item>
+        <item>@drawable/latin_u_20_2</item>
+        <item>@drawable/latin_u_20_3</item>
+        <item>@drawable/latin_u_20_4</item>
+        <item>@drawable/latin_u_20_5</item>
+        <item>@drawable/latin_u_20_6</item>
+        <item>@drawable/latin_u_20_8</item>
+        <item>@drawable/latin_u_20_9</item>
+        <item>@drawable/latin_u_20_10</item>
+        <item>@drawable/latin_u_21_0</item>
         <item>@drawable/latin_u_21_1</item>
+        <item>@drawable/latin_u_21_2</item>
+        <item>@drawable/latin_u_21_3</item>
+        <item>@drawable/latin_u_21_4</item>
+        <item>@drawable/latin_u_21_5</item>
+        <item>@drawable/latin_u_21_6</item>
+        <item>@drawable/latin_u_21_8</item>
+        <item>@drawable/latin_u_21_9</item>
+        <item>@drawable/latin_u_21_10</item>
+        <item>@drawable/latin_u_22_0</item>
         <item>@drawable/latin_u_22_1</item>
+        <item>@drawable/latin_u_22_2</item>
+        <item>@drawable/latin_u_22_3</item>
+        <item>@drawable/latin_u_22_4</item>
+        <item>@drawable/latin_u_22_5</item>
+        <item>@drawable/latin_u_22_6</item>
+        <item>@drawable/latin_u_22_8</item>
+        <item>@drawable/latin_u_22_9</item>
+        <item>@drawable/latin_u_22_10</item>
+        <item>@drawable/latin_u_23_0</item>
         <item>@drawable/latin_u_23_1</item>
+        <item>@drawable/latin_u_23_2</item>
+        <item>@drawable/latin_u_23_3</item>
+        <item>@drawable/latin_u_23_4</item>
+        <item>@drawable/latin_u_23_5</item>
+        <item>@drawable/latin_u_23_6</item>
+        <item>@drawable/latin_u_23_8</item>
+        <item>@drawable/latin_u_23_9</item>
+        <item>@drawable/latin_u_23_10</item>
+        <item>@drawable/latin_u_24_0</item>
         <item>@drawable/latin_u_24_1</item>
+        <item>@drawable/latin_u_24_2</item>
+        <item>@drawable/latin_u_24_3</item>
+        <item>@drawable/latin_u_24_4</item>
+        <item>@drawable/latin_u_24_5</item>
+        <item>@drawable/latin_u_24_6</item>
+        <item>@drawable/latin_u_24_8</item>
+        <item>@drawable/latin_u_24_9</item>
+        <item>@drawable/latin_u_24_10</item>
+        <item>@drawable/latin_u_25_0</item>
         <item>@drawable/latin_u_25_1</item>
+        <item>@drawable/latin_u_25_2</item>
+        <item>@drawable/latin_u_25_3</item>
+        <item>@drawable/latin_u_25_4</item>
+        <item>@drawable/latin_u_25_5</item>
+        <item>@drawable/latin_u_25_6</item>
+        <item>@drawable/latin_u_25_8</item>
+        <item>@drawable/latin_u_25_9</item>
+        <item>@drawable/latin_u_25_10</item>
+        <item>@drawable/latin_u_26_0</item>
         <item>@drawable/latin_u_26_1</item>
+        <item>@drawable/latin_u_26_2</item>
+        <item>@drawable/latin_u_26_3</item>
+        <item>@drawable/latin_u_26_4</item>
+        <item>@drawable/latin_u_26_5</item>
+        <item>@drawable/latin_u_26_6</item>
+        <item>@drawable/latin_u_26_8</item>
+        <item>@drawable/latin_u_26_9</item>
+        <item>@drawable/latin_u_26_10</item>
+        <item>@drawable/latin_l_1_0</item>
         <item>@drawable/latin_l_1_1</item>
+        <item>@drawable/latin_l_1_2</item>
+        <item>@drawable/latin_l_1_3</item>
+        <item>@drawable/latin_l_1_4</item>
+        <item>@drawable/latin_l_1_5</item>
+        <item>@drawable/latin_l_1_6</item>
+        <item>@drawable/latin_l_1_7</item>
+        <item>@drawable/latin_l_1_8</item>
+        <item>@drawable/latin_l_1_9</item>
+        <item>@drawable/latin_l_1_10</item>
+        <item>@drawable/latin_l_2_0</item>
         <item>@drawable/latin_l_2_1</item>
+        <item>@drawable/latin_l_2_2</item>
+        <item>@drawable/latin_l_2_3</item>
+        <item>@drawable/latin_l_2_4</item>
+        <item>@drawable/latin_l_2_5</item>
+        <item>@drawable/latin_l_2_6</item>
+        <item>@drawable/latin_l_2_7</item>
+        <item>@drawable/latin_l_2_8</item>
+        <item>@drawable/latin_l_2_9</item>
+        <item>@drawable/latin_l_2_10</item>
+        <item>@drawable/latin_l_3_0</item>
         <item>@drawable/latin_l_3_1</item>
+        <item>@drawable/latin_l_3_2</item>
+        <item>@drawable/latin_l_3_3</item>
+        <item>@drawable/latin_l_3_4</item>
+        <item>@drawable/latin_l_3_5</item>
+        <item>@drawable/latin_l_3_6</item>
+        <item>@drawable/latin_l_3_7</item>
+        <item>@drawable/latin_l_3_8</item>
+        <item>@drawable/latin_l_3_9</item>
+        <item>@drawable/latin_l_3_10</item>
+        <item>@drawable/latin_l_4_0</item>
         <item>@drawable/latin_l_4_1</item>
+        <item>@drawable/latin_l_4_2</item>
+        <item>@drawable/latin_l_4_3</item>
+        <item>@drawable/latin_l_4_4</item>
+        <item>@drawable/latin_l_4_5</item>
+        <item>@drawable/latin_l_4_6</item>
+        <item>@drawable/latin_l_4_7</item>
+        <item>@drawable/latin_l_4_8</item>
+        <item>@drawable/latin_l_4_9</item>
+        <item>@drawable/latin_l_4_10</item>
+        <item>@drawable/latin_l_5_0</item>
         <item>@drawable/latin_l_5_1</item>
+        <item>@drawable/latin_l_5_2</item>
+        <item>@drawable/latin_l_5_3</item>
+        <item>@drawable/latin_l_5_4</item>
+        <item>@drawable/latin_l_5_5</item>
+        <item>@drawable/latin_l_5_6</item>
+        <item>@drawable/latin_l_5_7</item>
+        <item>@drawable/latin_l_5_8</item>
+        <item>@drawable/latin_l_5_9</item>
+        <item>@drawable/latin_l_5_10</item>
+        <item>@drawable/latin_l_6_0</item>
         <item>@drawable/latin_l_6_1</item>
+        <item>@drawable/latin_l_6_2</item>
+        <item>@drawable/latin_l_6_3</item>
+        <item>@drawable/latin_l_6_4</item>
+        <item>@drawable/latin_l_6_5</item>
+        <item>@drawable/latin_l_6_6</item>
+        <item>@drawable/latin_l_6_7</item>
+        <item>@drawable/latin_l_6_8</item>
+        <item>@drawable/latin_l_6_9</item>
+        <item>@drawable/latin_l_6_10</item>
+        <item>@drawable/latin_l_7_0</item>
         <item>@drawable/latin_l_7_1</item>
+        <item>@drawable/latin_l_7_2</item>
+        <item>@drawable/latin_l_7_3</item>
+        <item>@drawable/latin_l_7_4</item>
+        <item>@drawable/latin_l_7_5</item>
+        <item>@drawable/latin_l_7_6</item>
+        <item>@drawable/latin_l_7_7</item>
+        <item>@drawable/latin_l_7_8</item>
+        <item>@drawable/latin_l_7_9</item>
+        <item>@drawable/latin_l_7_10</item>
+        <item>@drawable/latin_l_8_0</item>
         <item>@drawable/latin_l_8_1</item>
+        <item>@drawable/latin_l_8_2</item>
+        <item>@drawable/latin_l_8_3</item>
+        <item>@drawable/latin_l_8_4</item>
+        <item>@drawable/latin_l_8_5</item>
+        <item>@drawable/latin_l_8_6</item>
+        <item>@drawable/latin_l_8_7</item>
+        <item>@drawable/latin_l_8_8</item>
+        <item>@drawable/latin_l_8_9</item>
+        <item>@drawable/latin_l_8_10</item>
+        <item>@drawable/latin_l_9_0</item>
         <item>@drawable/latin_l_9_1</item>
+        <item>@drawable/latin_l_9_2</item>
+        <item>@drawable/latin_l_9_3</item>
+        <item>@drawable/latin_l_9_4</item>
+        <item>@drawable/latin_l_9_5</item>
+        <item>@drawable/latin_l_9_6</item>
+        <item>@drawable/latin_l_9_7</item>
+        <item>@drawable/latin_l_9_8</item>
+        <item>@drawable/latin_l_9_9</item>
+        <item>@drawable/latin_l_9_10</item>
+        <item>@drawable/latin_l_10_0</item>
         <item>@drawable/latin_l_10_1</item>
+        <item>@drawable/latin_l_10_2</item>
+        <item>@drawable/latin_l_10_3</item>
+        <item>@drawable/latin_l_10_4</item>
+        <item>@drawable/latin_l_10_5</item>
+        <item>@drawable/latin_l_10_6</item>
+        <item>@drawable/latin_l_10_7</item>
+        <item>@drawable/latin_l_10_8</item>
+        <item>@drawable/latin_l_10_9</item>
+        <item>@drawable/latin_l_10_10</item>
+        <item>@drawable/latin_l_11_0</item>
         <item>@drawable/latin_l_11_1</item>
+        <item>@drawable/latin_l_11_2</item>
+        <item>@drawable/latin_l_11_3</item>
+        <item>@drawable/latin_l_11_4</item>
+        <item>@drawable/latin_l_11_5</item>
+        <item>@drawable/latin_l_11_6</item>
+        <item>@drawable/latin_l_11_7</item>
+        <item>@drawable/latin_l_11_8</item>
+        <item>@drawable/latin_l_11_9</item>
+        <item>@drawable/latin_l_11_10</item>
+        <item>@drawable/latin_l_12_0</item>
         <item>@drawable/latin_l_12_1</item>
+        <item>@drawable/latin_l_12_2</item>
+        <item>@drawable/latin_l_12_3</item>
+        <item>@drawable/latin_l_12_4</item>
+        <item>@drawable/latin_l_12_5</item>
+        <item>@drawable/latin_l_12_6</item>
+        <item>@drawable/latin_l_12_7</item>
+        <item>@drawable/latin_l_12_8</item>
+        <item>@drawable/latin_l_12_9</item>
+        <item>@drawable/latin_l_12_10</item>
+        <item>@drawable/latin_l_13_0</item>
         <item>@drawable/latin_l_13_1</item>
+        <item>@drawable/latin_l_13_2</item>
+        <item>@drawable/latin_l_13_3</item>
+        <item>@drawable/latin_l_13_4</item>
+        <item>@drawable/latin_l_13_5</item>
+        <item>@drawable/latin_l_13_6</item>
+        <item>@drawable/latin_l_13_7</item>
+        <item>@drawable/latin_l_13_8</item>
+        <item>@drawable/latin_l_13_9</item>
+        <item>@drawable/latin_l_13_10</item>
+        <item>@drawable/latin_l_14_0</item>
         <item>@drawable/latin_l_14_1</item>
+        <item>@drawable/latin_l_14_2</item>
+        <item>@drawable/latin_l_14_3</item>
+        <item>@drawable/latin_l_14_4</item>
+        <item>@drawable/latin_l_14_5</item>
+        <item>@drawable/latin_l_14_6</item>
+        <item>@drawable/latin_l_14_7</item>
+        <item>@drawable/latin_l_14_8</item>
+        <item>@drawable/latin_l_14_9</item>
+        <item>@drawable/latin_l_14_10</item>
+        <item>@drawable/latin_l_15_0</item>
         <item>@drawable/latin_l_15_1</item>
+        <item>@drawable/latin_l_15_2</item>
+        <item>@drawable/latin_l_15_3</item>
+        <item>@drawable/latin_l_15_4</item>
+        <item>@drawable/latin_l_15_5</item>
+        <item>@drawable/latin_l_15_6</item>
+        <item>@drawable/latin_l_15_7</item>
+        <item>@drawable/latin_l_15_8</item>
+        <item>@drawable/latin_l_15_9</item>
+        <item>@drawable/latin_l_15_10</item>
+        <item>@drawable/latin_l_16_0</item>
         <item>@drawable/latin_l_16_1</item>
+        <item>@drawable/latin_l_16_2</item>
+        <item>@drawable/latin_l_16_3</item>
+        <item>@drawable/latin_l_16_4</item>
+        <item>@drawable/latin_l_16_5</item>
+        <item>@drawable/latin_l_16_6</item>
+        <item>@drawable/latin_l_16_7</item>
+        <item>@drawable/latin_l_16_8</item>
+        <item>@drawable/latin_l_16_9</item>
+        <item>@drawable/latin_l_16_10</item>
+        <item>@drawable/latin_l_17_0</item>
         <item>@drawable/latin_l_17_1</item>
+        <item>@drawable/latin_l_17_2</item>
+        <item>@drawable/latin_l_17_3</item>
+        <item>@drawable/latin_l_17_4</item>
+        <item>@drawable/latin_l_17_5</item>
+        <item>@drawable/latin_l_17_6</item>
+        <item>@drawable/latin_l_17_7</item>
+        <item>@drawable/latin_l_17_8</item>
+        <item>@drawable/latin_l_17_9</item>
+        <item>@drawable/latin_l_17_10</item>
+        <item>@drawable/latin_l_18_0</item>
         <item>@drawable/latin_l_18_1</item>
+        <item>@drawable/latin_l_18_2</item>
+        <item>@drawable/latin_l_18_3</item>
+        <item>@drawable/latin_l_18_4</item>
+        <item>@drawable/latin_l_18_5</item>
+        <item>@drawable/latin_l_18_6</item>
+        <item>@drawable/latin_l_18_7</item>
+        <item>@drawable/latin_l_18_8</item>
+        <item>@drawable/latin_l_18_9</item>
+        <item>@drawable/latin_l_18_10</item>
+        <item>@drawable/latin_l_19_0</item>
         <item>@drawable/latin_l_19_1</item>
+        <item>@drawable/latin_l_19_2</item>
+        <item>@drawable/latin_l_19_3</item>
+        <item>@drawable/latin_l_19_4</item>
+        <item>@drawable/latin_l_19_5</item>
+        <item>@drawable/latin_l_19_6</item>
+        <item>@drawable/latin_l_19_7</item>
+        <item>@drawable/latin_l_19_8</item>
+        <item>@drawable/latin_l_19_9</item>
+        <item>@drawable/latin_l_19_10</item>
+        <item>@drawable/latin_l_20_0</item>
         <item>@drawable/latin_l_20_1</item>
+        <item>@drawable/latin_l_20_2</item>
+        <item>@drawable/latin_l_20_3</item>
+        <item>@drawable/latin_l_20_4</item>
+        <item>@drawable/latin_l_20_5</item>
+        <item>@drawable/latin_l_20_6</item>
+        <item>@drawable/latin_l_20_7</item>
+        <item>@drawable/latin_l_20_8</item>
+        <item>@drawable/latin_l_20_9</item>
+        <item>@drawable/latin_l_20_10</item>
+        <item>@drawable/latin_l_21_0</item>
         <item>@drawable/latin_l_21_1</item>
+        <item>@drawable/latin_l_21_2</item>
+        <item>@drawable/latin_l_21_3</item>
+        <item>@drawable/latin_l_21_4</item>
+        <item>@drawable/latin_l_21_5</item>
+        <item>@drawable/latin_l_21_6</item>
+        <item>@drawable/latin_l_21_7</item>
+        <item>@drawable/latin_l_21_8</item>
+        <item>@drawable/latin_l_21_9</item>
+        <item>@drawable/latin_l_21_10</item>
+        <item>@drawable/latin_l_22_0</item>
         <item>@drawable/latin_l_22_1</item>
+        <item>@drawable/latin_l_22_2</item>
+        <item>@drawable/latin_l_22_3</item>
+        <item>@drawable/latin_l_22_4</item>
+        <item>@drawable/latin_l_22_5</item>
+        <item>@drawable/latin_l_22_6</item>
+        <item>@drawable/latin_l_22_7</item>
+        <item>@drawable/latin_l_22_8</item>
+        <item>@drawable/latin_l_22_9</item>
+        <item>@drawable/latin_l_22_10</item>
+        <item>@drawable/latin_l_23_0</item>
         <item>@drawable/latin_l_23_1</item>
+        <item>@drawable/latin_l_23_2</item>
+        <item>@drawable/latin_l_23_3</item>
+        <item>@drawable/latin_l_23_4</item>
+        <item>@drawable/latin_l_23_5</item>
+        <item>@drawable/latin_l_23_6</item>
+        <item>@drawable/latin_l_23_7</item>
+        <item>@drawable/latin_l_23_8</item>
+        <item>@drawable/latin_l_23_9</item>
+        <item>@drawable/latin_l_23_10</item>
+        <item>@drawable/latin_l_24_0</item>
         <item>@drawable/latin_l_24_1</item>
+        <item>@drawable/latin_l_24_2</item>
+        <item>@drawable/latin_l_24_3</item>
+        <item>@drawable/latin_l_24_4</item>
+        <item>@drawable/latin_l_24_5</item>
+        <item>@drawable/latin_l_24_6</item>
+        <item>@drawable/latin_l_24_7</item>
+        <item>@drawable/latin_l_24_8</item>
+        <item>@drawable/latin_l_24_9</item>
+        <item>@drawable/latin_l_24_10</item>
+        <item>@drawable/latin_l_25_0</item>
         <item>@drawable/latin_l_25_1</item>
+        <item>@drawable/latin_l_25_2</item>
+        <item>@drawable/latin_l_25_3</item>
+        <item>@drawable/latin_l_25_4</item>
+        <item>@drawable/latin_l_25_5</item>
+        <item>@drawable/latin_l_25_6</item>
+        <item>@drawable/latin_l_25_7</item>
+        <item>@drawable/latin_l_25_8</item>
+        <item>@drawable/latin_l_25_9</item>
+        <item>@drawable/latin_l_25_10</item>
+        <item>@drawable/latin_l_26_0</item>
         <item>@drawable/latin_l_26_1</item>
+        <item>@drawable/latin_l_26_2</item>
+        <item>@drawable/latin_l_26_3</item>
+        <item>@drawable/latin_l_26_4</item>
+        <item>@drawable/latin_l_26_5</item>
+        <item>@drawable/latin_l_26_6</item>
+        <item>@drawable/latin_l_26_7</item>
+        <item>@drawable/latin_l_26_8</item>
+        <item>@drawable/latin_l_26_9</item>
+        <item>@drawable/latin_l_26_10</item>
+
+    </string-array>
+
+    <string-array name="letters_category_name">
+        <item>라틴 대문자 A</item>
+        <item>라틴 대문자 B</item>
+        <item>라틴 대문자 C</item>
+        <item>라틴 대문자 D</item>
+        <item>라틴 대문자 E</item>
+        <item>라틴 대문자 F</item>
+        <item>라틴 대문자 G</item>
+        <item>라틴 대문자 H</item>
+        <item>라틴 대문자 I</item>
+        <item>라틴 대문자 J</item>
+        <item>라틴 대문자 K</item>
+        <item>라틴 대문자 L</item>
+        <item>라틴 대문자 M</item>
+        <item>라틴 대문자 N</item>
+        <item>라틴 대문자 O</item>
+        <item>라틴 대문자 P</item>
+        <item>라틴 대문자 Q</item>
+        <item>라틴 대문자 R</item>
+        <item>라틴 대문자 S</item>
+        <item>라틴 대문자 T</item>
+        <item>라틴 대문자 U</item>
+        <item>라틴 대문자 V</item>
+        <item>라틴 대문자 W</item>
+        <item>라틴 대문자 X</item>
+        <item>라틴 대문자 Y</item>
+        <item>라틴 대문자 Z</item>
+        <item>라틴 대문자 기타</item>
+        <item>라틴 소문자 a</item>
+        <item>라틴 소문자 b</item>
+        <item>라틴 소문자 c</item>
+        <item>라틴 소문자 d</item>
+        <item>라틴 소문자 e</item>
+        <item>라틴 소문자 f</item>
+        <item>라틴 소문자 g</item>
+        <item>라틴 소문자 h</item>
+        <item>라틴 소문자 i</item>
+        <item>라틴 소문자 j</item>
+        <item>라틴 소문자 k</item>
+        <item>라틴 소문자 l</item>
+        <item>라틴 소문자 m</item>
+        <item>라틴 소문자 n</item>
+        <item>라틴 소문자 o</item>
+        <item>라틴 소문자 p</item>
+        <item>라틴 소문자 q</item>
+        <item>라틴 소문자 r</item>
+        <item>라틴 소문자 s</item>
+        <item>라틴 소문자 t</item>
+        <item>라틴 소문자 u</item>
+        <item>라틴 소문자 v</item>
+        <item>라틴 소문자 w</item>
+        <item>라틴 소문자 x</item>
+        <item>라틴 소문자 y</item>
+        <item>라틴 소문자 z</item>
+        <item>라틴 소문자 기타</item>
+        <item>라틴 문자 기타</item>
     </string-array>
 
     <integer-array name="letters_category">
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
         <item>1</item>
         <item>2</item>
+        <item>2</item>
+        <item>2</item>
+        <item>2</item>
+        <item>2</item>
+        <item>2</item>
+        <item>2</item>
+        <item>2</item>
+        <item>2</item>
+        <item>2</item>
+        <item>3</item>
+        <item>3</item>
+        <item>3</item>
+        <item>3</item>
+        <item>3</item>
+        <item>3</item>
+        <item>3</item>
+        <item>3</item>
+        <item>3</item>
         <item>3</item>
         <item>4</item>
+        <item>4</item>
+        <item>4</item>
+        <item>4</item>
+        <item>4</item>
+        <item>4</item>
+        <item>4</item>
+        <item>4</item>
+        <item>4</item>
+        <item>4</item>
+        <item>5</item>
+        <item>5</item>
+        <item>5</item>
+        <item>5</item>
+        <item>5</item>
+        <item>5</item>
+        <item>5</item>
+        <item>5</item>
+        <item>5</item>
         <item>5</item>
         <item>6</item>
+        <item>6</item>
+        <item>6</item>
+        <item>6</item>
+        <item>6</item>
+        <item>6</item>
+        <item>6</item>
+        <item>6</item>
+        <item>6</item>
+        <item>6</item>
+        <item>7</item>
+        <item>7</item>
+        <item>7</item>
+        <item>7</item>
+        <item>7</item>
+        <item>7</item>
+        <item>7</item>
+        <item>7</item>
+        <item>7</item>
         <item>7</item>
         <item>8</item>
+        <item>8</item>
+        <item>8</item>
+        <item>8</item>
+        <item>8</item>
+        <item>8</item>
+        <item>8</item>
+        <item>8</item>
+        <item>8</item>
+        <item>8</item>
+        <item>9</item>
+        <item>9</item>
+        <item>9</item>
+        <item>9</item>
+        <item>9</item>
+        <item>9</item>
+        <item>9</item>
+        <item>9</item>
+        <item>9</item>
         <item>9</item>
         <item>10</item>
+        <item>10</item>
+        <item>10</item>
+        <item>10</item>
+        <item>10</item>
+        <item>10</item>
+        <item>10</item>
+        <item>10</item>
+        <item>10</item>
+        <item>10</item>
+        <item>11</item>
+        <item>11</item>
+        <item>11</item>
+        <item>11</item>
+        <item>11</item>
+        <item>11</item>
+        <item>11</item>
+        <item>11</item>
+        <item>11</item>
         <item>11</item>
         <item>12</item>
+        <item>12</item>
+        <item>12</item>
+        <item>12</item>
+        <item>12</item>
+        <item>12</item>
+        <item>12</item>
+        <item>12</item>
+        <item>12</item>
+        <item>12</item>
+        <item>13</item>
+        <item>13</item>
+        <item>13</item>
+        <item>13</item>
+        <item>13</item>
+        <item>13</item>
+        <item>13</item>
+        <item>13</item>
+        <item>13</item>
         <item>13</item>
         <item>14</item>
+        <item>14</item>
+        <item>14</item>
+        <item>14</item>
+        <item>14</item>
+        <item>14</item>
+        <item>14</item>
+        <item>14</item>
+        <item>14</item>
+        <item>14</item>
+        <item>15</item>
+        <item>15</item>
+        <item>15</item>
+        <item>15</item>
+        <item>15</item>
+        <item>15</item>
+        <item>15</item>
+        <item>15</item>
+        <item>15</item>
         <item>15</item>
         <item>16</item>
+        <item>16</item>
+        <item>16</item>
+        <item>16</item>
+        <item>16</item>
+        <item>16</item>
+        <item>16</item>
+        <item>16</item>
+        <item>16</item>
+        <item>16</item>
+        <item>17</item>
+        <item>17</item>
+        <item>17</item>
+        <item>17</item>
+        <item>17</item>
+        <item>17</item>
+        <item>17</item>
+        <item>17</item>
+        <item>17</item>
         <item>17</item>
         <item>18</item>
+        <item>18</item>
+        <item>18</item>
+        <item>18</item>
+        <item>18</item>
+        <item>18</item>
+        <item>18</item>
+        <item>18</item>
+        <item>18</item>
+        <item>18</item>
+        <item>19</item>
+        <item>19</item>
+        <item>19</item>
+        <item>19</item>
+        <item>19</item>
+        <item>19</item>
+        <item>19</item>
+        <item>19</item>
+        <item>19</item>
         <item>19</item>
         <item>20</item>
+        <item>20</item>
+        <item>20</item>
+        <item>20</item>
+        <item>20</item>
+        <item>20</item>
+        <item>20</item>
+        <item>20</item>
+        <item>20</item>
+        <item>20</item>
+        <item>21</item>
+        <item>21</item>
+        <item>21</item>
+        <item>21</item>
+        <item>21</item>
+        <item>21</item>
+        <item>21</item>
+        <item>21</item>
+        <item>21</item>
         <item>21</item>
         <item>22</item>
+        <item>22</item>
+        <item>22</item>
+        <item>22</item>
+        <item>22</item>
+        <item>22</item>
+        <item>22</item>
+        <item>22</item>
+        <item>22</item>
+        <item>22</item>
+        <item>23</item>
+        <item>23</item>
+        <item>23</item>
+        <item>23</item>
+        <item>23</item>
+        <item>23</item>
+        <item>23</item>
+        <item>23</item>
+        <item>23</item>
         <item>23</item>
         <item>24</item>
+        <item>24</item>
+        <item>24</item>
+        <item>24</item>
+        <item>24</item>
+        <item>24</item>
+        <item>24</item>
+        <item>24</item>
+        <item>24</item>
+        <item>24</item>
         <item>25</item>
-        <item>26</item>
+        <item>25</item>
+        <item>25</item>
+        <item>25</item>
+        <item>25</item>
+        <item>25</item>
+        <item>25</item>
+        <item>25</item>
+        <item>25</item>
+        <item>25</item>
+        <item>27</item>
+        <item>27</item>
+        <item>27</item>
+        <item>27</item>
+        <item>27</item>
+        <item>27</item>
+        <item>27</item>
+        <item>27</item>
+        <item>27</item>
+        <item>27</item>
+        <item>27</item>
+        <item>28</item>
+        <item>28</item>
+        <item>28</item>
+        <item>28</item>
+        <item>28</item>
+        <item>28</item>
+        <item>28</item>
+        <item>28</item>
+        <item>28</item>
+        <item>28</item>
         <item>28</item>
         <item>29</item>
+        <item>29</item>
+        <item>29</item>
+        <item>29</item>
+        <item>29</item>
+        <item>29</item>
+        <item>29</item>
+        <item>29</item>
+        <item>29</item>
+        <item>29</item>
+        <item>29</item>
+        <item>30</item>
+        <item>30</item>
+        <item>30</item>
+        <item>30</item>
+        <item>30</item>
+        <item>30</item>
+        <item>30</item>
+        <item>30</item>
+        <item>30</item>
+        <item>30</item>
         <item>30</item>
         <item>31</item>
+        <item>31</item>
+        <item>31</item>
+        <item>31</item>
+        <item>31</item>
+        <item>31</item>
+        <item>31</item>
+        <item>31</item>
+        <item>31</item>
+        <item>31</item>
+        <item>31</item>
+        <item>32</item>
+        <item>32</item>
+        <item>32</item>
+        <item>32</item>
+        <item>32</item>
+        <item>32</item>
+        <item>32</item>
+        <item>32</item>
+        <item>32</item>
+        <item>32</item>
         <item>32</item>
         <item>33</item>
+        <item>33</item>
+        <item>33</item>
+        <item>33</item>
+        <item>33</item>
+        <item>33</item>
+        <item>33</item>
+        <item>33</item>
+        <item>33</item>
+        <item>33</item>
+        <item>33</item>
+        <item>34</item>
+        <item>34</item>
+        <item>34</item>
+        <item>34</item>
+        <item>34</item>
+        <item>34</item>
+        <item>34</item>
+        <item>34</item>
+        <item>34</item>
+        <item>34</item>
         <item>34</item>
         <item>35</item>
+        <item>35</item>
+        <item>35</item>
+        <item>35</item>
+        <item>35</item>
+        <item>35</item>
+        <item>35</item>
+        <item>35</item>
+        <item>35</item>
+        <item>35</item>
+        <item>35</item>
+        <item>36</item>
+        <item>36</item>
+        <item>36</item>
+        <item>36</item>
+        <item>36</item>
+        <item>36</item>
+        <item>36</item>
+        <item>36</item>
+        <item>36</item>
+        <item>36</item>
         <item>36</item>
         <item>37</item>
+        <item>37</item>
+        <item>37</item>
+        <item>37</item>
+        <item>37</item>
+        <item>37</item>
+        <item>37</item>
+        <item>37</item>
+        <item>37</item>
+        <item>37</item>
+        <item>37</item>
+        <item>38</item>
+        <item>38</item>
+        <item>38</item>
+        <item>38</item>
+        <item>38</item>
+        <item>38</item>
+        <item>38</item>
+        <item>38</item>
+        <item>38</item>
+        <item>38</item>
         <item>38</item>
         <item>39</item>
+        <item>39</item>
+        <item>39</item>
+        <item>39</item>
+        <item>39</item>
+        <item>39</item>
+        <item>39</item>
+        <item>39</item>
+        <item>39</item>
+        <item>39</item>
+        <item>39</item>
+        <item>40</item>
+        <item>40</item>
+        <item>40</item>
+        <item>40</item>
+        <item>40</item>
+        <item>40</item>
+        <item>40</item>
+        <item>40</item>
+        <item>40</item>
+        <item>40</item>
         <item>40</item>
         <item>41</item>
+        <item>41</item>
+        <item>41</item>
+        <item>41</item>
+        <item>41</item>
+        <item>41</item>
+        <item>41</item>
+        <item>41</item>
+        <item>41</item>
+        <item>41</item>
+        <item>41</item>
+        <item>42</item>
+        <item>42</item>
+        <item>42</item>
+        <item>42</item>
+        <item>42</item>
+        <item>42</item>
+        <item>42</item>
+        <item>42</item>
+        <item>42</item>
+        <item>42</item>
         <item>42</item>
         <item>43</item>
+        <item>43</item>
+        <item>43</item>
+        <item>43</item>
+        <item>43</item>
+        <item>43</item>
+        <item>43</item>
+        <item>43</item>
+        <item>43</item>
+        <item>43</item>
+        <item>43</item>
+        <item>44</item>
+        <item>44</item>
+        <item>44</item>
+        <item>44</item>
+        <item>44</item>
+        <item>44</item>
+        <item>44</item>
+        <item>44</item>
+        <item>44</item>
+        <item>44</item>
         <item>44</item>
         <item>45</item>
+        <item>45</item>
+        <item>45</item>
+        <item>45</item>
+        <item>45</item>
+        <item>45</item>
+        <item>45</item>
+        <item>45</item>
+        <item>45</item>
+        <item>45</item>
+        <item>45</item>
+        <item>46</item>
+        <item>46</item>
+        <item>46</item>
+        <item>46</item>
+        <item>46</item>
+        <item>46</item>
+        <item>46</item>
+        <item>46</item>
+        <item>46</item>
+        <item>46</item>
         <item>46</item>
         <item>47</item>
+        <item>47</item>
+        <item>47</item>
+        <item>47</item>
+        <item>47</item>
+        <item>47</item>
+        <item>47</item>
+        <item>47</item>
+        <item>47</item>
+        <item>47</item>
+        <item>47</item>
+        <item>48</item>
+        <item>48</item>
+        <item>48</item>
+        <item>48</item>
+        <item>48</item>
+        <item>48</item>
+        <item>48</item>
+        <item>48</item>
+        <item>48</item>
+        <item>48</item>
         <item>48</item>
         <item>49</item>
+        <item>49</item>
+        <item>49</item>
+        <item>49</item>
+        <item>49</item>
+        <item>49</item>
+        <item>49</item>
+        <item>49</item>
+        <item>49</item>
+        <item>49</item>
+        <item>49</item>
+        <item>50</item>
+        <item>50</item>
+        <item>50</item>
+        <item>50</item>
+        <item>50</item>
+        <item>50</item>
+        <item>50</item>
+        <item>50</item>
+        <item>50</item>
+        <item>50</item>
         <item>50</item>
         <item>51</item>
+        <item>51</item>
+        <item>51</item>
+        <item>51</item>
+        <item>51</item>
+        <item>51</item>
+        <item>51</item>
+        <item>51</item>
+        <item>51</item>
+        <item>51</item>
+        <item>51</item>
         <item>52</item>
-        <item>53</item>
+        <item>52</item>
+        <item>52</item>
+        <item>52</item>
+        <item>52</item>
+        <item>52</item>
+        <item>52</item>
+        <item>52</item>
+        <item>52</item>
+        <item>52</item>
+        <item>52</item>
     </integer-array>
 
 </resources>

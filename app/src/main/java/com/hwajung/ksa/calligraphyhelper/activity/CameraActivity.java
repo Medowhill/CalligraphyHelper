@@ -7,6 +7,8 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 
@@ -25,6 +27,7 @@ public class CameraActivity extends Activity {
 
     ImageView imageView;
     SeekBar seekBar;
+    Button button_cancel, button_save;
 
     Bitmap bitmap, primaryBitmap;
 
@@ -37,6 +40,8 @@ public class CameraActivity extends Activity {
 
         imageView = (ImageView) findViewById(R.id.imageView_camera);
         seekBar = (SeekBar) findViewById(R.id.seekBar_sensitivity);
+        button_cancel = (Button) findViewById(R.id.button_cancel);
+        button_save = (Button) findViewById(R.id.button_save);
 
         Intent i = getIntent();
         int type = i.getIntExtra("TYPE", GALLERY);
@@ -65,6 +70,24 @@ public class CameraActivity extends Activity {
                 process();
             }
         });
+
+        button_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setResult(RESULT_CANCELED);
+                finish();
+            }
+        });
+
+        button_save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.putExtra("LETTERCODE", 0);
+                setResult(RESULT_OK, intent);
+                finish();
+            }
+        });
     }
 
 
@@ -89,6 +112,9 @@ public class CameraActivity extends Activity {
                     process();
                     break;
             }
+        } else {
+            setResult(RESULT_CANCELED);
+            finish();
         }
     }
 
@@ -119,5 +145,11 @@ public class CameraActivity extends Activity {
         intent.putExtra("crop", "true");
         intent.putExtra("return-data", true);
         startActivityForResult(intent, CROP);
+    }
+
+    @Override
+    public void onBackPressed() {
+        setResult(RESULT_CANCELED);
+        super.onBackPressed();
     }
 }

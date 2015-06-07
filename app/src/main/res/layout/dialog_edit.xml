@@ -21,6 +21,7 @@
                 android:layout_marginBottom="@dimen/sketch_margin_color_selection">
 
                 <TextView
+                    android:id="@+id/textView_colorPreview"
                     android:layout_width="@dimen/sketch_edit_textView"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
@@ -30,103 +31,9 @@
                 <ImageView
                     android:id="@+id/imageView_colorPreview"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="160dp"
                     android:layout_weight="1"
                     android:background="#ffffff" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:layout_width="@dimen/sketch_color_selection"
-                        android:layout_height="@dimen/sketch_color_selection"
-                        android:layout_marginBottom="@dimen/sketch_margin_color_selection"
-                        android:layout_marginLeft="@dimen/sketch_margin_color_selection"
-                        android:background="#ffffff" />
-
-                    <ImageView
-                        android:layout_width="@dimen/sketch_color_selection"
-                        android:layout_height="@dimen/sketch_color_selection"
-                        android:layout_marginBottom="@dimen/sketch_margin_color_selection"
-                        android:layout_marginLeft="@dimen/sketch_margin_color_selection"
-                        android:background="#ffffff" />
-
-                    <ImageView
-                        android:layout_width="@dimen/sketch_color_selection"
-                        android:layout_height="@dimen/sketch_color_selection"
-                        android:layout_marginBottom="@dimen/sketch_margin_color_selection"
-                        android:layout_marginLeft="@dimen/sketch_margin_color_selection"
-                        android:background="#ffffff" />
-
-                    <ImageView
-                        android:layout_width="@dimen/sketch_color_selection"
-                        android:layout_height="@dimen/sketch_color_selection"
-                        android:layout_marginBottom="@dimen/sketch_margin_color_selection"
-                        android:layout_marginLeft="@dimen/sketch_margin_color_selection"
-                        android:background="#ffffff" />
-
-                    <ImageView
-                        android:layout_width="@dimen/sketch_color_selection"
-                        android:layout_height="@dimen/sketch_color_selection"
-                        android:layout_marginBottom="@dimen/sketch_margin_color_selection"
-                        android:layout_marginLeft="@dimen/sketch_margin_color_selection"
-                        android:background="#ffffff" />
-
-                    <ImageView
-                        android:layout_width="@dimen/sketch_color_selection"
-                        android:layout_height="@dimen/sketch_color_selection"
-                        android:layout_marginLeft="@dimen/sketch_margin_color_selection"
-                        android:background="#ffffff" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:layout_width="@dimen/sketch_color_selection"
-                        android:layout_height="@dimen/sketch_color_selection"
-                        android:layout_marginBottom="@dimen/sketch_margin_color_selection"
-                        android:layout_marginLeft="@dimen/sketch_margin_color_selection"
-                        android:background="#ffffff" />
-
-                    <ImageView
-                        android:layout_width="@dimen/sketch_color_selection"
-                        android:layout_height="@dimen/sketch_color_selection"
-                        android:layout_marginBottom="@dimen/sketch_margin_color_selection"
-                        android:layout_marginLeft="@dimen/sketch_margin_color_selection"
-                        android:background="#ffffff" />
-
-                    <ImageView
-                        android:layout_width="@dimen/sketch_color_selection"
-                        android:layout_height="@dimen/sketch_color_selection"
-                        android:layout_marginBottom="@dimen/sketch_margin_color_selection"
-                        android:layout_marginLeft="@dimen/sketch_margin_color_selection"
-                        android:background="#ffffff" />
-
-                    <ImageView
-                        android:layout_width="@dimen/sketch_color_selection"
-                        android:layout_height="@dimen/sketch_color_selection"
-                        android:layout_marginBottom="@dimen/sketch_margin_color_selection"
-                        android:layout_marginLeft="@dimen/sketch_margin_color_selection"
-                        android:background="#ffffff" />
-
-                    <ImageView
-                        android:layout_width="@dimen/sketch_color_selection"
-                        android:layout_height="@dimen/sketch_color_selection"
-                        android:layout_marginBottom="@dimen/sketch_margin_color_selection"
-                        android:layout_marginLeft="@dimen/sketch_margin_color_selection"
-                        android:background="#ffffff" />
-
-                    <ImageView
-                        android:layout_width="@dimen/sketch_color_selection"
-                        android:layout_height="@dimen/sketch_color_selection"
-                        android:layout_marginLeft="@dimen/sketch_margin_color_selection"
-                        android:background="#ffffff" />
-                </LinearLayout>
 
             </LinearLayout>
 
@@ -135,6 +42,7 @@
                 android:layout_height="wrap_content">
 
                 <TextView
+                    android:id="@+id/textView_alpha"
                     android:layout_width="@dimen/sketch_edit_textView"
                     android:layout_height="wrap_content"
                     android:text="@string/alpha"
@@ -159,6 +67,7 @@
                 android:layout_height="wrap_content">
 
                 <TextView
+                    android:id="@+id/textView_red"
                     android:layout_width="@dimen/sketch_edit_textView"
                     android:layout_height="wrap_content"
                     android:text="@string/red"
@@ -183,6 +92,7 @@
                 android:layout_height="wrap_content">
 
                 <TextView
+                    android:id="@+id/textView_green"
                     android:layout_width="@dimen/sketch_edit_textView"
                     android:layout_height="wrap_content"
                     android:text="@string/green"
@@ -207,6 +117,7 @@
                 android:layout_height="wrap_content">
 
                 <TextView
+                    android:id="@+id/textView_blue"
                     android:layout_width="@dimen/sketch_edit_textView"
                     android:layout_height="wrap_content"
                     android:text="@string/blue"
@@ -231,6 +142,7 @@
                 android:layout_height="wrap_content">
 
                 <TextView
+                    android:id="@+id/textView_size"
                     android:layout_width="@dimen/sketch_edit_textView"
                     android:layout_height="wrap_content"
                     android:text="@string/size"
@@ -255,6 +167,7 @@
                 android:layout_height="wrap_content">
 
                 <TextView
+                    android:id="@+id/textView_degree"
                     android:layout_width="@dimen/sketch_edit_textView"
                     android:layout_height="wrap_content"
                     android:text="@string/degree"

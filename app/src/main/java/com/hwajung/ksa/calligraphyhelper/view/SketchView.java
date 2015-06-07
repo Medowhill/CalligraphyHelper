@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -27,7 +28,7 @@ public class SketchView extends View {
     // View to show main sketch screen
 
     private final int TOUCH_LETTER = 0, TOUCH_DELETE = 1, TOUCH_EDIT = 2, NO_TOUCH = 3;
-    private final int MIN_X_SHIFT = 0, MAX_X_SHIFT = 10000, MIN_Y_SHIFT = 0, MAX_Y_SHIFT = 10000;
+    private final float MIN_X = 0, MAX_X = 10000, MIN_Y = 0, MAX_Y = 10000, MIN_SCALE = 0.2f, MAX_SCALE = 5;
 
     // Activity which calls this view
     private SketchActivity sketchActivity;
@@ -48,6 +49,7 @@ public class SketchView extends View {
 
     // Stack saving change of letter for undo and redo
     private Stack<LetterChange> redoStack, undoStack;
+    private Stack<Stroke> strokeStack;
     private LetterChange templateLetterData;
 
     // x, y direction movement of canvas
@@ -67,7 +69,12 @@ public class SketchView extends View {
 
     private boolean drawingMode = false;
 
+    private boolean drawGrid = true;
+
     private ArrayList<Point> drawingPoints;
+    private ArrayList<Stroke> drawingStrokes;
+
+    private float thickness = 10;
 
     public SketchView(Context context, AttributeSet attrs) {
         // Constructor
@@ -102,6 +109,9 @@ public class SketchView extends View {
         // Stack initialize
         redoStack = new Stack<>();
         undoStack = new Stack<>();
+
+        // Stack initialize
+        strokeStack = new Stack<>();
     }
 
     @Override
@@ -121,31 +131,24 @@ public class SketchView extends View {
         // Fill canvas background in white
         canvas.drawColor(Color.WHITE);
 
-        // Canvas extension, reduction, rotation
+        // Canvas extension, reduction, translation
         canvas.scale(scale, scale, xPivot, yPivot);
         canvas.translate(xShift, yShift);
 
-        // Pivot point of x,y axis
-        Point leftTop = new Point(0, 0).transform(scale, xPivot, yPivot, xShift, yShift);
-        Point rightBottom = new Point(screenWidth, screenHeight).transform(scale, xPivot, yPivot, xShift, yShift);
+        if (drawGrid) {
+            // Pivot point of grid
+            Point leftTop = new Point(0, 0).transform(scale, xPivot, yPivot, xShift, yShift);
+            Point rightBottom = new Point(screenWidth, screenHeight).transform(scale, xPivot, yPivot, xShift, yShift);
 
-        // Change stroke width of paint for x,y axis
-        paint_axis.setStrokeWidth(getResources().getInteger(R.integer.sketch_axis_stroke) / scale);
+            // Change stroke width of paint for grid
+            paint_line.setStrokeWidth(getResources().getInteger(R.integer.sketch_line_stroke) / scale);
 
-        // Draw x,y axis
-        canvas.drawLine(0, leftTop.y, 0, rightBottom.y, paint_axis);
-        canvas.drawLine(leftTop.x, 0, rightBottom.x, 0, paint_axis);
-
-        // Change stroke width of paint for grid
-        paint_line.setStrokeWidth(getResources().getInteger(R.integer.sketch_line_stroke) / scale);
-
-        // Draw grid
-        for (int i = (int) (leftTop.x / interval) - 1; i < (int) (rightBottom.x / interval) + 1; i++)
-            if (i != 0)
+            // Draw grid
+            for (int i = (int) (leftTop.x / interval) - 1; i < (int) (rightBottom.x / interval) + 1; i++)
                 canvas.drawLine(i * interval, leftTop.y, i * interval, rightBottom.y, paint_line);
-        for (int i = (int) (leftTop.y / interval) - 1; i < (int) (rightBottom.y / interval) + 1; i++)
-            if (i != 0)
+            for (int i = (int) (leftTop.y / interval) - 1; i < (int) (rightBottom.y / interval) + 1; i++)
                 canvas.drawLine(leftTop.x, i * interval, rightBottom.x, i * interval, paint_line);
+        }
 
         for (int i = 0; i < letters.size(); i++) {
             // Draw letter
@@ -193,33 +196,21 @@ public class SketchView extends View {
         }
 
         if (drawingMode) {
-            paint_drawing.setStrokeWidth(5);
-            int size = 20;
-            double angle = Math.toRadians(-45);
+            paint_drawing.setStrokeWidth(thickness * 2);
 
             for (int i = 1; i < drawingPoints.size(); i++) {
-                if (drawingPoints.get(i) != null && drawingPoints.get(i - 1) != null) {
-                    float x1 = drawingPoints.get(i - 1).x;
-                    float y1 = drawingPoints.get(i - 1).y;
-                    float x2 = drawingPoints.get(i).x;
-                    float y2 = drawingPoints.get(i).y;
-                    Path path = new Path();
-                    path.reset();
-                    path.moveTo(x1 + size * (float) Math.cos(angle), y1 + size * (float) Math.sin(angle));
-                    path.lineTo(x2 + size * (float) Math.cos(angle), y2 + size * (float) Math.sin(angle));
-                    path.lineTo(x2 - size * (float) Math.cos(angle), y2 - size * (float) Math.sin(angle));
-                    path.lineTo(x1 - size * (float) Math.cos(angle), y1 - size * (float) Math.sin(angle));
-                    path.lineTo(x1 + size * (float) Math.cos(angle), y1 + size * (float) Math.sin(angle));
-                    canvas.drawPath(path, paint_drawing);
-                }
+                Point p1 = drawingPoints.get(i - 1);
+                Point p2 = drawingPoints.get(i);
+                canvas.drawLine(p1.x, p1.y, p2.x, p2.y, paint_drawing);
             }
+            for (int i = 0; i < drawingStrokes.size(); i++)
+                drawingStrokes.get(i).draw(canvas);
         }
     }
 
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        Log.i("TEST", undoStack.size() + "");
 
         // Make activity's menu invisible
         if (sketchActivity != null)
@@ -238,11 +229,38 @@ public class SketchView extends View {
 
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
+                    // Set cannot undo or redo while touching
+                    if (sketchActivity != null) {
+                        sketchActivity.setRedoButton(false);
+                        sketchActivity.setUndoButton(false);
+                    }
                 case MotionEvent.ACTION_MOVE:
                     drawingPoints.add(trans);
                     break;
                 case MotionEvent.ACTION_UP:
-                    drawingPoints.add(null);
+                    drawingPoints.add(trans);
+                    Path path = new Path();
+                    path.moveTo(drawingPoints.get(0).x, drawingPoints.get(0).y);
+                    for (int i = 0; i < drawingPoints.size() - 2; i++) {
+                        float x1 = drawingPoints.get(i).x;
+                        float y1 = drawingPoints.get(i).y;
+                        float x2 = drawingPoints.get(i + 1).x;
+                        float y2 = drawingPoints.get(i + 1).y;
+                        float x3 = drawingPoints.get(i + 2).x;
+                        float y3 = drawingPoints.get(i + 2).y;
+                        float deg1 = (float) Math.atan((y2 - y1) / (x2 - x1));
+                        float deg2 = (float) Math.atan((y3 - y2) / (x3 - x2));
+                        path.rLineTo(x2 - x1, y2 - y1);
+                        path.addArc(new RectF(x2 - thickness, y2 - thickness, x2 + thickness, y2 + thickness), (float) -Math.PI / 2 - deg1, deg1 - deg2);
+                    }
+                    drawingStrokes.add(new Stroke(drawingPoints, true));
+                    drawingPoints.clear();
+
+                    if (sketchActivity != null) {
+                        strokeStack.clear();
+                        sketchActivity.setRedoButton(false);
+                        sketchActivity.setUndoButton(true);
+                    }
                     break;
             }
 
@@ -321,6 +339,14 @@ public class SketchView extends View {
                                     templateLetterData = new LetterChange(selectedLetter, letter.getId(),
                                             letter.getPoint(), letter.getSize(), letter.getDegree(), letter.getColor());
                                     selectedLetter = -1;
+
+                                    undoStack.push(templateLetterData);
+                                    redoStack.clear();
+                                    if (sketchActivity != null) {
+                                        sketchActivity.setRedoButton(false);
+                                        sketchActivity.setUndoButton(true);
+                                        sketchActivity.modify();
+                                    }
                                     break;
                                 case TOUCH_EDIT:
                                     if (sketchActivity != null)
@@ -385,6 +411,7 @@ public class SketchView extends View {
                                 // If pointer is for canvas's translation, change canvas's coordinate
                                 xShift += trans.x - prevTrans.x;
                                 yShift += trans.y - prevTrans.y;
+                                regulate();
                                 break;
                         }
 
@@ -412,6 +439,7 @@ public class SketchView extends View {
                             if (selectedLetter == -1) {
                                 // If letter is not selected, change scale of canvas
                                 scale *= distance / prevDistance;
+                                regulate();
                             } else {
                                 // If letter is selected, change scale and degree of letter
                                 letter = letters.get(selectedLetter);
@@ -519,13 +547,39 @@ public class SketchView extends View {
     }
 
     public void undo() {
-        if (sketchActivity != null)
-            sketchActivity.modify();
-        unReDo(undoStack, redoStack);
+        if (drawingMode) {
+            if (!drawingStrokes.isEmpty()) {
+                strokeStack.push(drawingStrokes.get(drawingStrokes.size() - 1));
+                drawingStrokes.remove(drawingStrokes.size() - 1);
+
+                if (sketchActivity != null) {
+                    sketchActivity.setUndoButton(!drawingStrokes.isEmpty());
+                    sketchActivity.setRedoButton(true);
+                }
+                invalidate();
+            }
+        } else {
+            if (sketchActivity != null)
+                sketchActivity.modify();
+            unReDo(undoStack, redoStack);
+        }
     }
 
     public void redo() {
-        unReDo(redoStack, undoStack);
+        if (drawingMode) {
+            if (!strokeStack.empty()) {
+                drawingStrokes.add(strokeStack.pop());
+                if (sketchActivity != null) {
+                    sketchActivity.setUndoButton(true);
+                    sketchActivity.setRedoButton(!strokeStack.empty());
+                }
+                invalidate();
+            }
+        } else {
+            if (sketchActivity != null)
+                sketchActivity.modify();
+            unReDo(redoStack, undoStack);
+        }
     }
 
     public void setSketchActivity(SketchActivity sketchActivity) {
@@ -544,7 +598,7 @@ public class SketchView extends View {
         }
 
         Letter letter = new Letter(id);
-        letter.setPoint(new Point(-xShift + screenWidth / 2 / scale - letter.getWidth() / 2, -yShift + screenHeight / 2 / scale - letter.getHeight() / 2));
+        letter.setPoint(new Point(-xShift + screenWidth / 2 - letter.getWidth() / 2, -yShift + screenHeight / 2 - letter.getHeight() / 2));
         letters.add(letter);
         selectedLetter = letters.size() - 1;
         invalidate();
@@ -554,7 +608,8 @@ public class SketchView extends View {
     public byte[] getData() {
         String data = "";
         for (Letter letter : letters)
-            data += 0 + "\t" + letter.getId() + "\t" + letter.getPoint().x + "\t" + letter.getPoint().y + "\t" + letter.getSize() + "\t" + letter.getDegree() + "\n";
+            data += 0 + "\t" + letter.getId() + "\t" + letter.getPoint().x + "\t" + letter.getPoint().y +
+                    "\t" + letter.getSize() + "\t" + letter.getDegree() + "\t" + letter.getColor() + "\n";
         return data.getBytes();
     }
 
@@ -585,7 +640,8 @@ public class SketchView extends View {
                     float y = Float.parseFloat(split[3]);
                     float size = Float.parseFloat(split[4]);
                     float degree = Float.parseFloat(split[5]);
-                    Letter letter = new Letter(id);
+                    int color = Integer.parseInt(split[6]);
+                    Letter letter = new Letter(id, color);
                     letter.setPoint(new Point(x, y));
                     letter.setSize(size);
                     letter.setDegree(degree);
@@ -618,9 +674,77 @@ public class SketchView extends View {
         invalidate();
     }
 
+    public void regulateFitting() {
+        if (letters.size() > 0) {
+            float xMin = MAX_X, xMax = MIN_X, yMin = MAX_Y, yMax = MIN_Y;
+            for (Letter letter : letters) {
+                float r = (float) Math.sqrt(letter.getHeight() * letter.getHeight() + letter.getWidth() * letter.getWidth()) / 2 * letter.getSize();
+                float w_ = letter.getWidth() / 2;
+                float h_ = letter.getHeight() / 2;
+                Point point = letter.getPoint();
+                float xMin_ = point.x + w_ - r;
+                float xMax_ = point.x + w_ + r;
+                float yMin_ = point.y + h_ - r;
+                float yMax_ = point.y + h_ + r;
+                if (xMin_ < xMin)
+                    xMin = xMin_;
+                if (yMin_ < yMin)
+                    yMin = yMin_;
+                if (xMax_ > xMax)
+                    xMax = xMax_;
+                if (yMax_ > yMax)
+                    yMax = yMax_;
+            }
+            float w = xMax - xMin + 50;
+            float h = yMax - yMin + 50;
+            scale = Math.min(screenWidth / w, screenHeight / h);
+            xShift = xPivot * (1 - 1 / scale) - (xMin + 25);
+            yShift = yPivot * (1 - 1 / scale) - (yMin + 25);
+            regulate();
+            invalidate();
+        }
+    }
+
+    private void regulate() {
+        if (xPivot * (1 - 1 / scale) - xShift < MIN_X)
+            xShift = xPivot * (1 - 1 / scale) - MIN_X;
+        else if (xPivot * (1 + 1 / scale) - xShift > MAX_X)
+            xShift = xPivot * (1 + 1 / scale) - MAX_X;
+        if (yPivot * (1 - 1 / scale) - yShift < MIN_Y)
+            yShift = yPivot * (1 - 1 / scale) - MIN_Y;
+        else if (yPivot * (1 + 1 / scale) - yShift > MAX_Y)
+            yShift = yPivot * (1 + 1 / scale) - MAX_Y;
+        if (scale > MAX_SCALE)
+            scale = MAX_SCALE;
+        else if (scale < MIN_SCALE)
+            scale = MIN_SCALE;
+    }
+
     public void setDrawingMode(boolean drawingMode) {
         this.drawingMode = drawingMode;
         drawingPoints = new ArrayList<>();
+        drawingStrokes = new ArrayList<>();
+    }
+
+    public Bitmap getBitmapImage() {
+        float x_ = xShift, y_ = yShift, s_ = scale;
+        int selected_ = selectedLetter;
+
+        drawGrid = false;
+        selectedLetter = -1;
+        regulateFitting();
+        setDrawingCacheEnabled(true);
+        Bitmap bitmap = getDrawingCache();
+        Bitmap screenShot = bitmap.copy(Bitmap.Config.ARGB_8888, false);
+        setDrawingCacheEnabled(false);
+
+        drawGrid = true;
+        xShift = x_;
+        yShift = y_;
+        scale = s_;
+        selectedLetter = selected_;
+        invalidate();
+        return screenShot;
     }
 
     // Pointer class
@@ -681,6 +805,29 @@ public class SketchView extends View {
             this.size = size;
             this.degree = degree;
             this.color = color;
+        }
+    }
+
+    private class Stroke {
+        private ArrayList<Point> points;
+        private boolean circle;
+
+        Stroke(ArrayList<Point> points, boolean circle) {
+            this.points = new ArrayList<Point>();
+            this.points.addAll(points);
+            this.circle = circle;
+        }
+
+        void draw(Canvas canvas) {
+            if (circle) {
+                for (int i = 0; i < points.size() - 1; i++) {
+                    Point p1 = points.get(i);
+                    Point p2 = points.get(i + 1);
+                    canvas.drawLine(p1.x, p1.y, p2.x, p2.y, paint_drawing);
+                }
+                for (int i = 0; i < points.size(); i++)
+                    canvas.drawCircle(points.get(i).x, points.get(i).y, thickness, paint_drawing);
+            }
         }
     }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <integer name="version">3</integer>
+    <integer name="version">7</integer>
     <integer name="letter_category_num">92</integer>
     <integer name="color_max">255</integer>
     <integer name="size_max">499</integer>

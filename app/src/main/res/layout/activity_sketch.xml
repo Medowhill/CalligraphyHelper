@@ -75,18 +75,32 @@
             android:layout_height="match_parent"
             android:layout_weight="1" />
 
-        <GridView
-            android:id="@+id/gridView_letter"
-            style="@style/sketch_scrollbar_style"
+        <LinearLayout
+            android:id="@+id/linearLayout_letter"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="#000000"
-            android:gravity="center_horizontal"
-            android:horizontalSpacing="@dimen/sketch_margin_button"
-            android:numColumns="6"
-            android:verticalSpacing="@dimen/sketch_margin_button"
-            android:visibility="invisible"></GridView>
+            android:orientation="vertical"
+            android:visibility="invisible">
+
+            <Spinner
+                android:id="@+id/spinner_category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"></Spinner>
+
+            <GridView
+                android:id="@+id/gridView_letter"
+                style="@style/sketch_scrollbar_style"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="#000000"
+                android:gravity="center_horizontal"
+                android:horizontalSpacing="@dimen/sketch_margin_button"
+                android:numColumns="6"
+                android:verticalSpacing="@dimen/sketch_margin_button"></GridView>
+
+        </LinearLayout>
 
     </LinearLayout>
 

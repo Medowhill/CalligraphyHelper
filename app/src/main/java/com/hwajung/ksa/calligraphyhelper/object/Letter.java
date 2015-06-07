@@ -49,16 +49,14 @@ public class Letter {
         if (bitmap != null)
             bitmap.recycle();
         try {
-            Bitmap primaryBitmap;
-            primaryBitmap = BitmapFactory.decodeStream(context.openFileInput(
-                    context.getResources().getString(R.string.fileName_letterResource) + id));
+            Bitmap primaryBitmap = BitmapFactory.decodeStream(
+                    context.openFileInput(context.getString(R.string.fileName_letterResource) + id));
 
             int bitmapWidth = primaryBitmap.getWidth();
             int bitmapHeight = primaryBitmap.getHeight();
 
             int[] colors = new int[bitmapHeight * bitmapWidth];
             primaryBitmap.getPixels(colors, 0, bitmapWidth, 0, 0, bitmapWidth, bitmapHeight);
-            primaryBitmap.recycle();
 
             for (int i = 0; i < colors.length; i++)
                 if (Color.red(colors[i]) + Color.green(colors[i]) + Color.blue(colors[i]) < BLACK * 3)
