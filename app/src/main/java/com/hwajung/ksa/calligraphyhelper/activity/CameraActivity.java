@@ -1,6 +1,8 @@
 package com.hwajung.ksa.calligraphyhelper.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -8,13 +10,19 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.hwajung.ksa.calligraphyhelper.R;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Created by Jaemin on 2015-06-06.
@@ -82,10 +90,65 @@ public class CameraActivity extends Activity {
         button_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent();
-                intent.putExtra("LETTERCODE", 0);
-                setResult(RESULT_OK, intent);
-                finish();
+                AlertDialog.Builder adb = new AlertDialog.Builder(CameraActivity.this);
+
+                final View dialogView = getLayoutInflater().inflate(R.layout.dialog_lettersave, null);
+                adb.setView(dialogView);
+
+                final Spinner spinner = (Spinner) dialogView.findViewById(R.id.spinner_newLetterCategory);
+                ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(CameraActivity.this,
+                        R.array.letters_category_name, android.R.layout.simple_spinner_dropdown_item);
+                spinner.setAdapter(spinnerAdapter);
+
+                adb.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        try {
+                            String selected = spinner.getSelectedItem().toString();
+
+                            String[] categories = getResources().getStringArray(R.array.letters_category_name);
+                            byte index = -1;
+                            for (byte j = 0; j < categories.length; j++) {
+                                if (selected.equals(categories[j])) {
+                                    index = j;
+                                    break;
+                                }
+                            }
+
+                            FileInputStream fis = getApplicationContext().openFileInput(getString(R.string.fileName_letterResource));
+                            int length = fis.available();
+
+                            float ratio1 = 1.f * getResources().getInteger(R.integer.save_bitmap_size) / Math.max(bitmap.getWidth(), bitmap.getHeight());
+                            Bitmap bitmapSave = Bitmap.createScaledBitmap(bitmap, (int) (bitmap.getWidth() * ratio1), (int) (bitmap.getHeight() * ratio1), false);
+                            bitmapSave.compress(Bitmap.CompressFormat.PNG, 100,
+                                    getApplicationContext().openFileOutput(getString(R.string.fileName_letterResource) + length, MODE_PRIVATE));
+
+                            float ratio2 = 1.f * getResources().getInteger(R.integer.preview_bitmap_size) / Math.max(bitmap.getWidth(), bitmap.getHeight());
+                            Bitmap bitmapPreview = Bitmap.createScaledBitmap(bitmap, (int) (bitmap.getWidth() * ratio2), (int) (bitmap.getHeight() * ratio2), false);
+                            bitmapPreview.compress(Bitmap.CompressFormat.PNG, 100,
+                                    getApplicationContext().openFileOutput(getString(R.string.fileName_previewResource) + length, MODE_PRIVATE));
+
+                            FileOutputStream fos = openFileOutput(getString(R.string.fileName_letterResource), MODE_APPEND);
+                            fos.write(new byte[]{index});
+                            fos.flush();
+                            fos.close();
+
+                            Intent intent = new Intent();
+                            intent.putExtra("ID", length);
+                            setResult(RESULT_OK, intent);
+                            finish();
+                        } catch (IOException ioe) {
+                            Toast.makeText(getApplicationContext(), R.string.failSavingLetter, Toast.LENGTH_SHORT).show();
+                            setResult(RESULT_CANCELED);
+                            finish();
+                        }
+
+                    }
+                });
+                adb.setNegativeButton(R.string.cancel, null);
+
+                adb.setCancelable(false);
+                AlertDialog ad = adb.show();
             }
         });
     }

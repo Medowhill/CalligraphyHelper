@@ -607,6 +607,34 @@
         <item>라틴 소문자 z</item>
         <item>라틴 소문자 기타</item>
         <item>라틴 문자 기타</item>
+        <item>한글 자음 ㄱ</item>
+        <item>한글 자음 ㄴ</item>
+        <item>한글 자음 ㄷ</item>
+        <item>한글 자음 ㄹ</item>
+        <item>한글 자음 ㅁ</item>
+        <item>한글 자음 ㅂ</item>
+        <item>한글 자음 ㅅ</item>
+        <item>한글 자음 ㅇ</item>
+        <item>한글 자음 ㅈ</item>
+        <item>한글 자음 ㅊ</item>
+        <item>한글 자음 ㅋ</item>
+        <item>한글 자음 ㅌ</item>
+        <item>한글 자음 ㅍ</item>
+        <item>한글 자음 ㅎ</item>
+        <item>한글 자음 기타</item>
+        <item>한글 모음 ㅏ</item>
+        <item>한글 모음 ㅑ</item>
+        <item>한글 모음 ㅓ</item>
+        <item>한글 모음 ㅕ</item>
+        <item>한글 모음 ㅗ</item>
+        <item>한글 모음 ㅛ</item>
+        <item>한글 모음 ㅜ</item>
+        <item>한글 모음 ㅠ</item>
+        <item>한글 모음 ㅡ</item>
+        <item>한글 모음 ㅣ</item>
+        <item>한글 모음 기타</item>
+        <item>한글 기타</item>
+        <item>기타</item>
     </string-array>
 
     <integer-array name="letters_category">

@@ -2,7 +2,8 @@
 <resources>
 
     <color name="sketch_selected">#00CCCC</color>
-    <color name="sketch_axis">#222222</color>
-    <color name="sketch_line">#88AAAAAA</color>
+    <color name="sketch_line">#CCCCCC</color>
+    <color name="black">#000000</color>
+    <color name="white">#ffffff</color>
 
 </resources>

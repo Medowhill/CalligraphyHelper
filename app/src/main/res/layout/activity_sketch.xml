@@ -104,15 +104,35 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|left">
+
+        <ImageButton
+            android:id="@+id/button_draw_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/sketch_cancel" />
+
+        <ImageButton
+            android:id="@+id/button_draw_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/sketch_add" />
+
+    </LinearLayout>
+
 
     <TextView
         android:id="@+id/textView_fileName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|right"
-        android:background="#FFFFFF"
+        android:layout_margin="@dimen/sketch_fileName_margin"
+        android:background="@color/white"
         android:text="@string/defaultFileName"
-        android:textColor="#111111"
-        android:textSize="20sp" />
+        android:textColor="@color/black"
+        android:textSize="@dimen/sketch_fileName_textSize" />
 
 </FrameLayout>

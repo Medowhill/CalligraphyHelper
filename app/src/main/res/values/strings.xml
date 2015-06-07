@@ -39,5 +39,6 @@
     <string name="sensitivity">민감도</string>
     <string name="share">공유</string>
     <string name="makingDatabase">애플리케이션 최초 실행 시 데이터 베이스를 생성합니다. 잠시만 기다려 주세요.</string>
+    <string name="failSavingLetter">글씨를 데이터베이스에 추가하는데 실패했습니다.</string>
 
 </resources>

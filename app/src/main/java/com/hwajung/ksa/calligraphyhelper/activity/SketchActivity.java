@@ -44,13 +44,13 @@ import java.io.IOException;
 public class SketchActivity extends Activity {
 
     final int STATE_MENU_VISIBLE = 0, STATE_MENU_INVISIBLE = 1, STATE_MENU_APPEARING = 2, STATE_MENU_DISAPPEARING = 3;
-    final int REQUEST_DATABASE = 0;
+    final int REQUEST_CAMERA = 1, REQUEST_DRAW = 2, REQUEST_GALLERY = 3;
     final int ACTION_SAVE = 0, ACTION_SAVEAS = 1, ACTION_LOAD = 2, ACTION_NEW = 3, ACTION_FINISH = 4;
 
     ProgressDialog progressDialog;
 
     SketchView sketchView;
-    ImageButton button_menu, button_undo, button_redo;
+    ImageButton button_menu, button_undo, button_redo, button_add, button_cancel;
     MultiButton multiButton_menu;
     GridView gridView_letter;
     ScrollView scrollView_menu;
@@ -159,6 +159,8 @@ public class SketchActivity extends Activity {
         button_menu = (ImageButton) findViewById(R.id.button_menu);
         button_redo = (ImageButton) findViewById(R.id.button_redo);
         button_undo = (ImageButton) findViewById(R.id.button_undo);
+        button_add = (ImageButton) findViewById(R.id.button_draw_add);
+        button_cancel = (ImageButton) findViewById(R.id.button_draw_cancel);
         multiButton_menu = (MultiButton) findViewById(R.id.multiButton_menu);
         gridView_letter = (GridView) findViewById(R.id.gridView_letter);
         scrollView_menu = (ScrollView) findViewById(R.id.scrollView_menu);
@@ -317,6 +319,20 @@ public class SketchActivity extends Activity {
             }
         });
 
+        button_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        button_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
         // Set multiButton
         multiButton_menu.setDrawableID(new int[]{R.drawable.sketch_new,
                 R.drawable.sketch_load,
@@ -375,6 +391,7 @@ public class SketchActivity extends Activity {
             public void onClick(View view) {
                 closeMenu();
                 sketchView.setDrawingMode(true);
+                button_menu.setVisibility(View.INVISIBLE);
             }
         }, R.drawable.sketch_draw);
 
@@ -383,8 +400,8 @@ public class SketchActivity extends Activity {
             public void onClick(View view) {
                 closeMenu();
                 Intent intent = new Intent(getApplicationContext(), CameraActivity.class);
-                intent.putExtra("TYPE", 1);
-                startActivity(intent);
+                intent.putExtra("TYPE", REQUEST_CAMERA);
+                startActivityForResult(intent, REQUEST_CAMERA);
             }
         }, R.drawable.sketch_camera);
 
@@ -393,8 +410,8 @@ public class SketchActivity extends Activity {
             public void onClick(View view) {
                 closeMenu();
                 Intent intent = new Intent(getApplicationContext(), CameraActivity.class);
-                intent.putExtra("TYPE", 2);
-                startActivity(intent);
+                intent.putExtra("TYPE", REQUEST_GALLERY);
+                startActivityForResult(intent, REQUEST_GALLERY);
             }
         }, R.drawable.sketch_gallery);
 
@@ -480,6 +497,17 @@ public class SketchActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_CAMERA:
+            case REQUEST_GALLERY:
+                if (resultCode == RESULT_OK) {
+                    int id = data.getIntExtra("ID", -1);
+                    if (id != -1) {
+                        sketchView.addLetter(id);
+                    }
+                }
+                break;
+        }
     }
 
     @Override

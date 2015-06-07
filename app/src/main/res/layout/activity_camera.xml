@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ffffff"
+    android:background="@color/black"
     android:orientation="vertical">
 
     <ImageView
@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:background="@color/white"
         android:scaleType="fitCenter" />
 
     <LinearLayout
@@ -20,15 +21,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/sensitivity"
-            android:textColor="#111111"
-            android:textSize="20sp" />
+            android:textSize="@dimen/sketch_fileName_textSize" />
 
         <SeekBar
             android:id="@+id/seekBar_sensitivity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:max="255"
+            android:max="@integer/color_max"
             android:progress="70" />
     </LinearLayout>
 
@@ -36,14 +36,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-
         <Button
             android:id="@+id/button_cancel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/cancel"
-            android:textSize="30sp" />
+            android:textSize="@dimen/sketch_fileName_textSize" />
 
         <Button
             android:id="@+id/button_save"
@@ -51,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/save"
-            android:textSize="30sp" />
+            android:textSize="@dimen/sketch_fileName_textSize" />
 
     </LinearLayout>
 

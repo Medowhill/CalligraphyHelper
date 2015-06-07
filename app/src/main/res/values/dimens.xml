@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <integer name="sketch_selected_stroke">5</integer>
-    <integer name="sketch_axis_stroke">5</integer>
-    <integer name="sketch_line_stroke">3</integer>
-    <integer name="preview_bitmap_size">50</integer>
-    <integer name="save_bitmap_size">300</integer>
 
     <dimen name="sketch_margin_button">7dp</dimen>
     <dimen name="sketch_color_selection">30dp</dimen>
@@ -15,5 +10,7 @@
     <dimen name="sketch_edit_editText">60dp</dimen>
     <dimen name="sketch_edit_textView">80dp</dimen>
     <dimen name="sketch_edit_textSize">13sp</dimen>
+    <dimen name="sketch_fileName_margin">10dp</dimen>
+    <dimen name="sketch_fileName_textSize">20sp</dimen>
 
 </resources>
