@@ -13,7 +13,6 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -32,7 +31,10 @@ import android.widget.Toast;
 
 import com.hwajung.ksa.calligraphyhelper.R;
 import com.hwajung.ksa.calligraphyhelper.adapter.LetterAdapter;
+import com.hwajung.ksa.calligraphyhelper.view.FontButton;
+import com.hwajung.ksa.calligraphyhelper.view.FontTextView;
 import com.hwajung.ksa.calligraphyhelper.view.MultiButton;
+import com.hwajung.ksa.calligraphyhelper.view.PenPreView;
 import com.hwajung.ksa.calligraphyhelper.view.SketchView;
 
 import java.io.File;
@@ -40,6 +42,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+/**
+ * (C) 2015. Jaemin Hong all rights reserved.
+ */
 
 public class SketchActivity extends Activity {
 
@@ -50,15 +55,18 @@ public class SketchActivity extends Activity {
     ProgressDialog progressDialog;
 
     SketchView sketchView;
-    ImageButton button_menu, button_undo, button_redo, button_add, button_cancel;
+    ImageButton button_menu, button_undo, button_redo, button_add, button_cancel, button_circle, button_rectangle;
     MultiButton multiButton_menu;
     GridView gridView_letter;
     ScrollView scrollView_menu;
     TextView textView_fileName;
     Spinner spinner;
-    LinearLayout linearLayout_letter;
+    LinearLayout linearLayout_letter, linearLayout_draw, linearLayout_pen;
+    SeekBar seekBar_thickness, seekBar_degree;
+    PenPreView penPreView;
 
-    Animation animation_menu_appear, animation_menu_disappear, animation_newLetter_appear, animation_newLetter_disappear;
+    Animation animation_menu_appear, animation_menu_disappear, animation_newLetter_appear, animation_newLetter_disappear,
+            animation_pen_appear, animation_pen_disappear;
 
     LetterAdapter letterAdapter;
 
@@ -68,6 +76,7 @@ public class SketchActivity extends Activity {
 
     int menuAnimation = STATE_MENU_INVISIBLE;
     int newLetterAnimation = STATE_MENU_INVISIBLE;
+    int penAnimation = STATE_MENU_INVISIBLE;
 
     String currentFileName, loadingFileName;
     boolean isNewFile = true, modified = false;
@@ -110,7 +119,6 @@ public class SketchActivity extends Activity {
                     finish();
                 }
 
-                final int x = i;
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -128,7 +136,6 @@ public class SketchActivity extends Activity {
                 finish();
             }
 
-            letterAdapter = new LetterAdapter(SketchActivity.this);
             letterAdapter.load(data);
 
             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -144,15 +151,22 @@ public class SketchActivity extends Activity {
                 }
             });
 
+            Intent intent = new Intent(getApplicationContext(), HelpActivity.class);
+            startActivity(intent);
         }
     };
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sketch);
 
-        Log.i("TEST", "go");
+        // Make Typeface
+        typeface = Typeface.createFromAsset(getAssets(), getString(R.string.fontName));
+        FontTextView.setClassTypeface(typeface);
+        FontButton.setClassTypeface(typeface);
+
+        // Set view
+        setContentView(R.layout.activity_sketch);
 
         // Find views
         sketchView = (SketchView) findViewById(R.id.sketchView);
@@ -161,32 +175,36 @@ public class SketchActivity extends Activity {
         button_undo = (ImageButton) findViewById(R.id.button_undo);
         button_add = (ImageButton) findViewById(R.id.button_draw_add);
         button_cancel = (ImageButton) findViewById(R.id.button_draw_cancel);
+        button_circle = (ImageButton) findViewById(R.id.button_circle);
+        button_rectangle = (ImageButton) findViewById(R.id.button_rectangle);
         multiButton_menu = (MultiButton) findViewById(R.id.multiButton_menu);
         gridView_letter = (GridView) findViewById(R.id.gridView_letter);
         scrollView_menu = (ScrollView) findViewById(R.id.scrollView_menu);
         textView_fileName = (TextView) findViewById(R.id.textView_fileName);
         spinner = (Spinner) findViewById(R.id.spinner_category);
         linearLayout_letter = (LinearLayout) findViewById(R.id.linearLayout_letter);
-
-        // Make Typeface
-        typeface = Typeface.createFromAsset(getAssets(), "NanumGothic.ttf");
-
-        // Set Typeface
-        textView_fileName.setTypeface(typeface);
+        linearLayout_draw = (LinearLayout) findViewById(R.id.linearLayout_draw);
+        linearLayout_pen = (LinearLayout) findViewById(R.id.linearLayout_pen);
+        seekBar_degree = (SeekBar) findViewById(R.id.seekBar_rectdegree);
+        seekBar_thickness = (SeekBar) findViewById(R.id.seekBar_thickness);
+        penPreView = (PenPreView) findViewById(R.id.penPreView);
 
         // Set File Name
         currentFileName = getString(R.string.defaultFileName);
 
-        // Set undo, redo buttons
-        button_redo.setEnabled(false);
-        button_undo.setEnabled(false);
-
         // Make adpater
         ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this,
                 R.array.letters_category_name, R.layout.spinner_category);
+        letterAdapter = new LetterAdapter(SketchActivity.this);
 
         // Set sketchView
         sketchView.setSketchActivity(this);
+        if (savedInstanceState != null) {
+            byte[] data1 = savedInstanceState.getByteArray("DATA1");
+            float[] data2 = savedInstanceState.getFloatArray("DATA2");
+            sketchView.setDataByByteArray(data1);
+            sketchView.setSettings(data2);
+        }
 
         // Set gridView
         gridView_letter.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -211,7 +229,6 @@ public class SketchActivity extends Activity {
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-
             }
         });
 
@@ -257,6 +274,7 @@ public class SketchActivity extends Activity {
             public void onAnimationStart(Animation animation) {
                 linearLayout_letter.setVisibility(View.VISIBLE);
                 newLetterAnimation = STATE_MENU_APPEARING;
+                textView_fileName.setVisibility(View.INVISIBLE);
             }
 
             @Override
@@ -279,6 +297,43 @@ public class SketchActivity extends Activity {
             public void onAnimationEnd(Animation animation) {
                 newLetterAnimation = STATE_MENU_INVISIBLE;
                 linearLayout_letter.setVisibility(View.INVISIBLE);
+                textView_fileName.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
+        animation_pen_appear = AnimationUtils.loadAnimation(this, R.anim.sketch_pen_appear);
+        animation_pen_appear.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                linearLayout_pen.setVisibility(View.VISIBLE);
+                penAnimation = STATE_MENU_APPEARING;
+                textView_fileName.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                penAnimation = STATE_MENU_VISIBLE;
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
+        animation_pen_disappear = AnimationUtils.loadAnimation(this, R.anim.sketch_pen_disappear);
+        animation_pen_disappear.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                penAnimation = STATE_MENU_DISAPPEARING;
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                penAnimation = STATE_MENU_INVISIBLE;
+                linearLayout_pen.setVisibility(View.INVISIBLE);
+                textView_fileName.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -305,13 +360,15 @@ public class SketchActivity extends Activity {
             }
         });
 
-        // Set redo, undo buttons listener
+        // Set undo, redo buttons
+        button_redo.setEnabled(false);
         button_redo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 sketchView.redo();
             }
         });
+        button_undo.setEnabled(false);
         button_undo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -319,17 +376,86 @@ public class SketchActivity extends Activity {
             }
         });
 
+        // Set drawing mode buttons
         button_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Bitmap screenShot = sketchView.getBitmapImage(true);
 
+                try {
+                    File file = new File(getExternalFilesDir(null), "image.jpg");
+                    screenShot.compress(Bitmap.CompressFormat.PNG, 100, new FileOutputStream(file));
+                    Uri uri = Uri.fromFile(file);
+                    crop(uri);
+                } catch (IOException e) {
+                    Toast.makeText(getApplicationContext(), R.string.failLoadLetter, Toast.LENGTH_SHORT).show();
+                }
+
+                endDrawing();
             }
         });
 
         button_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                endDrawing();
+            }
+        });
 
+        button_circle.setEnabled(false);
+        button_circle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                button_circle.setEnabled(false);
+                button_rectangle.setEnabled(true);
+                sketchView.setIsCircle(true);
+                seekBar_degree.setEnabled(false);
+                penPreView.setCircle(true);
+            }
+        });
+
+        button_rectangle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                button_circle.setEnabled(true);
+                button_rectangle.setEnabled(false);
+                sketchView.setIsCircle(false);
+                seekBar_degree.setEnabled(true);
+                penPreView.setCircle(false);
+            }
+        });
+
+        // Set drawing mode seekBars
+        seekBar_thickness.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                penPreView.setThickness(seekBar.getProgress() * 0.5f);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                sketchView.setThickness(seekBar.getProgress() * 0.5f);
+            }
+        });
+
+        seekBar_degree.setEnabled(false);
+        seekBar_degree.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                penPreView.setDegree((float) Math.toRadians(seekBar.getProgress() - 90));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                sketchView.setDegree((float) Math.toRadians(seekBar.getProgress() - 90));
             }
         });
 
@@ -344,7 +470,6 @@ public class SketchActivity extends Activity {
                 R.drawable.sketch_draw,
                 R.drawable.sketch_camera,
                 R.drawable.sketch_gallery,
-                R.drawable.sketch_setting,
                 R.drawable.sketch_help});
 
         // Save button clicked
@@ -377,24 +502,34 @@ public class SketchActivity extends Activity {
             }
         }, R.drawable.sketch_new);
 
+        // New letter button clicked
         multiButton_menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                closeMenu();
+                letterAdapter.load();
+                gridView_letter.setAdapter(letterAdapter);
+
                 scrollView_menu.startAnimation(animation_menu_disappear);
-                linearLayout_letter.startAnimation(animation_newLetter_appear);
+                if (newLetterAnimation == STATE_MENU_INVISIBLE) {
+                    linearLayout_letter.startAnimation(animation_newLetter_appear);
+                }
             }
         }, R.drawable.sketch_newletter);
 
+        // Drawing mode button clicked
         multiButton_menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 closeMenu();
                 sketchView.setDrawingMode(true);
                 button_menu.setVisibility(View.INVISIBLE);
+                linearLayout_draw.setVisibility(View.VISIBLE);
+                button_add.setEnabled(false);
+                linearLayout_pen.startAnimation(animation_pen_appear);
             }
         }, R.drawable.sketch_draw);
 
+        // Camera button clicked
         multiButton_menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -405,6 +540,7 @@ public class SketchActivity extends Activity {
             }
         }, R.drawable.sketch_camera);
 
+        // Gallery button clicked
         multiButton_menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -415,11 +551,12 @@ public class SketchActivity extends Activity {
             }
         }, R.drawable.sketch_gallery);
 
+        // Share button clicked
         multiButton_menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 closeMenu();
-                Bitmap bitmap = sketchView.getBitmapImage();
+                Bitmap bitmap = sketchView.getBitmapImage(false);
                 try {
                     File file = new File(getExternalFilesDir(null), "image.jpg");
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, new FileOutputStream(file));
@@ -429,11 +566,13 @@ public class SketchActivity extends Activity {
                     intent.setType("image/jpg");
                     intent.putExtra(Intent.EXTRA_STREAM, uri);
                     startActivity(Intent.createChooser(intent, getString(R.string.share)));
-                } catch (Exception e) {
+                } catch (IOException e) {
+                    Toast.makeText(getApplicationContext(), R.string.failLoadImageFile, Toast.LENGTH_SHORT).show();
                 }
             }
         }, R.drawable.sketch_share);
 
+        // Fitting button clicked
         multiButton_menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -442,6 +581,7 @@ public class SketchActivity extends Activity {
             }
         }, R.drawable.sketch_fitting);
 
+        // SaveAs button clicked
         multiButton_menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -451,24 +591,15 @@ public class SketchActivity extends Activity {
             }
         }, R.drawable.sketch_saveas);
 
+        // Help button clicked
         multiButton_menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 closeMenu();
-            }
-        }, R.drawable.sketch_setting);
-
-        multiButton_menu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                closeMenu();
+                Intent intent = new Intent(getApplicationContext(), HelpActivity.class);
+                startActivity(intent);
             }
         }, R.drawable.sketch_help);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
 
         // Make database
         sharedPreferences = getSharedPreferences(getResources().getString(R.string.sharedPreferences_name), MODE_PRIVATE);
@@ -478,6 +609,8 @@ public class SketchActivity extends Activity {
                 FileOutputStream fos = getApplicationContext().openFileOutput(getString(R.string.fileName_saveFileNames), MODE_APPEND);
                 fos.close();
             } catch (IOException ioe) {
+                Toast.makeText(getApplicationContext(), R.string.failFindSaving, Toast.LENGTH_SHORT).show();
+                finish();
             }
 
             progressDialog = new ProgressDialog(this);
@@ -488,10 +621,6 @@ public class SketchActivity extends Activity {
             progressDialog.show();
 
             databaseThread.start();
-        } else {
-            letterAdapter = new LetterAdapter(this);
-            letterAdapter.load();
-            gridView_letter.setAdapter(letterAdapter);
         }
     }
 
@@ -507,17 +636,102 @@ public class SketchActivity extends Activity {
                     }
                 }
                 break;
+            case REQUEST_DRAW:
+                if (resultCode == RESULT_OK) {
+                    Bundle extras = data.getExtras();
+                    final Bitmap bitmap = extras.getParcelable("data");
+
+                    AlertDialog.Builder adb = new AlertDialog.Builder(SketchActivity.this);
+
+                    final View dialogView = getLayoutInflater().inflate(R.layout.dialog_lettersave, null);
+                    adb.setView(dialogView);
+
+                    final Spinner spinner = (Spinner) dialogView.findViewById(R.id.spinner_newLetterCategory);
+                    ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(SketchActivity.this,
+                            R.array.letters_category_name, R.layout.spinner_category_holo);
+                    spinner.setAdapter(spinnerAdapter);
+
+                    adb.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            try {
+                                String selected = spinner.getSelectedItem().toString();
+
+                                String[] categories = getResources().getStringArray(R.array.letters_category_name);
+                                byte index = -1;
+                                for (byte j = 0; j < categories.length; j++) {
+                                    if (selected.equals(categories[j])) {
+                                        index = j;
+                                        break;
+                                    }
+                                }
+
+                                FileInputStream fis = getApplicationContext().openFileInput(getString(R.string.fileName_letterResource));
+                                int length = fis.available();
+
+                                float ratio1 = 1.f * getResources().getInteger(R.integer.save_bitmap_size) / Math.max(bitmap.getWidth(), bitmap.getHeight());
+                                Bitmap bitmapSave = Bitmap.createScaledBitmap(bitmap, (int) (bitmap.getWidth() * ratio1), (int) (bitmap.getHeight() * ratio1), false);
+                                bitmapSave.compress(Bitmap.CompressFormat.PNG, 100,
+                                        getApplicationContext().openFileOutput(getString(R.string.fileName_letterResource) + length, MODE_PRIVATE));
+
+                                float ratio2 = 1.f * getResources().getInteger(R.integer.preview_bitmap_size) / Math.max(bitmap.getWidth(), bitmap.getHeight());
+                                Bitmap bitmapPreview = Bitmap.createScaledBitmap(bitmap, (int) (bitmap.getWidth() * ratio2), (int) (bitmap.getHeight() * ratio2), false);
+                                bitmapPreview.compress(Bitmap.CompressFormat.PNG, 100,
+                                        getApplicationContext().openFileOutput(getString(R.string.fileName_previewResource) + length, MODE_PRIVATE));
+
+                                FileOutputStream fos = openFileOutput(getString(R.string.fileName_letterResource), MODE_APPEND);
+                                fos.write(new byte[]{index});
+                                fos.flush();
+                                fos.close();
+
+                                sketchView.addLetter(length);
+                                letterAdapter.load();
+                                gridView_letter.setAdapter(letterAdapter);
+                            } catch (IOException ioe) {
+                                Toast.makeText(getApplicationContext(), R.string.failSavingLetter, Toast.LENGTH_SHORT).show();
+                            }
+
+                        }
+                    });
+                    adb.setNegativeButton(R.string.cancel, null);
+
+                    adb.setCancelable(false);
+                    AlertDialog ad = adb.show();
+
+                    TextView textView_b1 = (TextView) ad.findViewById(android.R.id.button1);
+                    TextView textView_b2 = (TextView) ad.findViewById(android.R.id.button2);
+                    textView_b1.setTypeface(typeface);
+                    textView_b2.setTypeface(typeface);
+                }
+                break;
         }
+
     }
 
     @Override
     public void onBackPressed() {
-        action = ACTION_FINISH;
-        if (modified) {
-            showWantToSaveDialog();
-        } else {
-            finish();
+        if (penAnimation == STATE_MENU_VISIBLE)
+            endDrawing();
+        else if (menuAnimation == STATE_MENU_VISIBLE)
+            scrollView_menu.startAnimation(animation_menu_disappear);
+        else if (newLetterAnimation == STATE_MENU_VISIBLE)
+            linearLayout_letter.startAnimation(animation_newLetter_disappear);
+        else {
+            action = ACTION_FINISH;
+            if (modified) {
+                showWantToSaveDialog();
+            } else {
+                finish();
+            }
         }
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putByteArray("DATA1", sketchView.getData());
+        outState.putFloatArray("DATA2", sketchView.getSettings());
     }
 
     private void save() {
@@ -567,8 +781,8 @@ public class SketchActivity extends Activity {
 
                 final String[] names = getFileNames();
                 boolean b = false;
-                for (int j = 0; j < names.length; j++) {
-                    if (name.equals(names[j])) {
+                for (String name_ : names) {
+                    if (name.equals(name_)) {
                         b = true;
                         break;
                     }
@@ -616,8 +830,10 @@ public class SketchActivity extends Activity {
 
         TextView textView_b1 = (TextView) ad.findViewById(android.R.id.button1);
         TextView textView_b2 = (TextView) ad.findViewById(android.R.id.button2);
+        TextView textView_b3 = (TextView) ad.findViewById(android.R.id.message);
         textView_b1.setTypeface(typeface);
         textView_b2.setTypeface(typeface);
+        textView_b3.setTypeface(typeface);
     }
 
     private void showLoadDialog() {
@@ -696,9 +912,11 @@ public class SketchActivity extends Activity {
         TextView textView_b1 = (TextView) ad.findViewById(android.R.id.button1);
         TextView textView_b2 = (TextView) ad.findViewById(android.R.id.button2);
         TextView textView_b3 = (TextView) ad.findViewById(android.R.id.button3);
+        TextView textView_b4 = (TextView) ad.findViewById(android.R.id.message);
         textView_b1.setTypeface(typeface);
         textView_b2.setTypeface(typeface);
         textView_b3.setTypeface(typeface);
+        textView_b4.setTypeface(typeface);
     }
 
     private void action() {
@@ -817,6 +1035,18 @@ public class SketchActivity extends Activity {
         return fileNames.split("\t");
     }
 
+    private void crop(Uri uri) {
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        intent.setDataAndType(uri, "image/*");
+        intent.putExtra("crop", "true");
+        intent.putExtra("return-data", true);
+        startActivityForResult(intent, REQUEST_DRAW);
+    }
+
+    public void setAddButton(boolean enabled) {
+        button_add.setEnabled(enabled);
+    }
+
     public void setUndoButton(boolean enabled) {
         button_undo.setEnabled(enabled);
     }
@@ -830,6 +1060,14 @@ public class SketchActivity extends Activity {
             scrollView_menu.startAnimation(animation_menu_disappear);
         if (newLetterAnimation == STATE_MENU_VISIBLE)
             linearLayout_letter.startAnimation(animation_newLetter_disappear);
+    }
+
+    private void endDrawing() {
+        button_menu.setVisibility(View.VISIBLE);
+        linearLayout_draw.setVisibility(View.INVISIBLE);
+        sketchView.setDrawingMode(false);
+        sketchView.invalidate();
+        linearLayout_pen.startAnimation(animation_pen_disappear);
     }
 
     public void showLetterEditDialog(int initialColor, float initialSize, float initialDegree) {
@@ -846,8 +1084,8 @@ public class SketchActivity extends Activity {
         textViews[5] = (TextView) dialogView.findViewById(R.id.textView_size);
         textViews[6] = (TextView) dialogView.findViewById(R.id.textView_degree);
 
-        for (int i = 0; i < textViews.length; i++)
-            textViews[i].setTypeface(typeface);
+        for (TextView tv : textViews)
+            tv.setTypeface(typeface);
 
         final ImageView imageView = (ImageView) dialogView.findViewById(R.id.imageView_colorPreview);
 

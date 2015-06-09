@@ -3,7 +3,6 @@ package com.hwajung.ksa.calligraphyhelper.adapter;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -17,7 +16,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- * Created by Jaemin on 2015-05-16.
+ * (C) 2015. Jaemin Hong all rights reserved.
  */
 public class LetterAdapter extends BaseAdapter {
 
@@ -33,7 +32,6 @@ public class LetterAdapter extends BaseAdapter {
     }
 
     public void load(byte[] data) {
-        Log.i("TEST", "load");
 
         fileName = new ArrayList[context.getResources().getInteger(R.integer.letter_category_num)];
         for (int i = 0; i < fileName.length; i++)

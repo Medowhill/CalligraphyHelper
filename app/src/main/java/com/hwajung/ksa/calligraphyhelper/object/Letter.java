@@ -10,7 +10,7 @@ import com.hwajung.ksa.calligraphyhelper.R;
 import java.io.FileNotFoundException;
 
 /**
- * Created by Jaemin on 2015-04-25.
+ * (C) 2015. Jaemin Hong all rights reserved.
  */
 public class Letter {
 
@@ -66,9 +66,7 @@ public class Letter {
 
             bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888);
             bitmap.setPixels(colors, 0, bitmapWidth, 0, 0, bitmapWidth, bitmapHeight);
-        } catch (FileNotFoundException e) {
-            bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
-        } catch (OutOfMemoryError e1) {
+        } catch (OutOfMemoryError | FileNotFoundException e) {
             bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
         }
     }

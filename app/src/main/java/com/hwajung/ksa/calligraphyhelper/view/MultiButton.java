@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 import com.hwajung.ksa.calligraphyhelper.R;
 
 /**
- * Created by Jaemin on 2015-05-06.
+ * (C) 2015. Jaemin Hong all rights reserved.
  */
 public class MultiButton extends LinearLayout {
 

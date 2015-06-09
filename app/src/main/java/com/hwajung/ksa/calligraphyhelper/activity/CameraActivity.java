@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -15,6 +16,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hwajung.ksa.calligraphyhelper.R;
@@ -25,7 +27,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
- * Created by Jaemin on 2015-06-06.
+ * (C) 2015. Jaemin Hong all rights reserved.
  */
 public class CameraActivity extends Activity {
 
@@ -41,10 +43,15 @@ public class CameraActivity extends Activity {
 
     File file;
 
+    Typeface typeface;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
+
+        // Make Typeface
+        typeface = Typeface.createFromAsset(getAssets(), getString(R.string.fontName));
 
         imageView = (ImageView) findViewById(R.id.imageView_camera);
         seekBar = (SeekBar) findViewById(R.id.seekBar_sensitivity);
@@ -97,7 +104,7 @@ public class CameraActivity extends Activity {
 
                 final Spinner spinner = (Spinner) dialogView.findViewById(R.id.spinner_newLetterCategory);
                 ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(CameraActivity.this,
-                        R.array.letters_category_name, android.R.layout.simple_spinner_dropdown_item);
+                        R.array.letters_category_name, R.layout.spinner_category_holo);
                 spinner.setAdapter(spinnerAdapter);
 
                 adb.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
@@ -149,6 +156,11 @@ public class CameraActivity extends Activity {
 
                 adb.setCancelable(false);
                 AlertDialog ad = adb.show();
+
+                TextView textView_b1 = (TextView) ad.findViewById(android.R.id.button1);
+                TextView textView_b2 = (TextView) ad.findViewById(android.R.id.button2);
+                textView_b1.setTypeface(typeface);
+                textView_b2.setTypeface(typeface);
             }
         });
     }

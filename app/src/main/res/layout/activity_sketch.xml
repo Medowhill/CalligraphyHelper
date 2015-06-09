@@ -65,6 +65,95 @@
 
     </LinearLayout>
 
+    <com.hwajung.ksa.calligraphyhelper.view.FontTextView
+        android:id="@+id/textView_fileName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|right"
+        android:layout_margin="@dimen/sketch_fileName_margin"
+        android:background="@drawable/shape_filename"
+        android:text="@string/defaultFileName"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sketch_fileName_textSize" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout_pen"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape_pen"
+        android:visibility="invisible">
+
+        <ImageButton
+            android:id="@+id/button_circle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/sketch_button_circle" />
+
+        <ImageButton
+            android:id="@+id/button_rectangle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/sketch_pen_button_margin"
+            android:background="@drawable/sketch_button_rectangle" />
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <com.hwajung.ksa.calligraphyhelper.view.FontTextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:text="@string/penThickness"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sketch_fileName_textSize" />
+
+            <com.hwajung.ksa.calligraphyhelper.view.FontTextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:text="@string/penDegree"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sketch_fileName_textSize" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <SeekBar
+                android:id="@+id/seekBar_thickness"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:max="@integer/thickness_max"
+                android:progress="20" />
+
+            <SeekBar
+                android:id="@+id/seekBar_rectdegree"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:max="@integer/rectdegree_max"
+                android:progress="90" />
+        </LinearLayout>
+
+        <com.hwajung.ksa.calligraphyhelper.view.PenPreView
+            android:id="@+id/penPreView"
+            android:layout_width="@dimen/sketch_preview_size"
+            android:layout_height="@dimen/sketch_preview_size" />
+
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -80,13 +169,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="@drawable/shape_newletter"
             android:orientation="vertical"
             android:visibility="invisible">
 
             <Spinner
                 android:id="@+id/spinner_category"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"></Spinner>
+                android:layout_height="wrap_content" />
 
             <GridView
                 android:id="@+id/gridView_letter"
@@ -94,45 +184,38 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="#000000"
+                android:columnWidth="50dp"
                 android:gravity="center_horizontal"
                 android:horizontalSpacing="@dimen/sketch_margin_button"
-                android:numColumns="6"
-                android:verticalSpacing="@dimen/sketch_margin_button"></GridView>
+                android:numColumns="auto_fit"
+                android:verticalSpacing="@dimen/sketch_margin_button" />
 
         </LinearLayout>
 
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/linearLayout_draw"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|left">
+        android:layout_gravity="bottom|left"
+        android:visibility="invisible">
 
         <ImageButton
             android:id="@+id/button_draw_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="@dimen/sketch_margin_button"
             android:background="@drawable/sketch_cancel" />
 
         <ImageButton
             android:id="@+id/button_draw_add"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/sketch_add" />
+            android:layout_margin="@dimen/sketch_margin_button"
+            android:background="@drawable/sketch_add"
+            android:enabled="false" />
 
     </LinearLayout>
-
-
-    <TextView
-        android:id="@+id/textView_fileName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top|right"
-        android:layout_margin="@dimen/sketch_fileName_margin"
-        android:background="@color/white"
-        android:text="@string/defaultFileName"
-        android:textColor="@color/black"
-        android:textSize="@dimen/sketch_fileName_textSize" />
 
 </FrameLayout>

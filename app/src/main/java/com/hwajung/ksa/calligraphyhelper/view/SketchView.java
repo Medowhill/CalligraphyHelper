@@ -9,7 +9,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -22,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Stack;
 
 /**
- * Created by Jaemin on 2015-04-25.
+ * (C) 2015. Jaemin Hong all rights reserved.
  */
 public class SketchView extends View {
     // View to show main sketch screen
@@ -70,17 +69,18 @@ public class SketchView extends View {
     private boolean drawingMode = false;
 
     private boolean drawGrid = true;
+    private boolean drawLetter = true;
 
     private ArrayList<Point> drawingPoints;
     private ArrayList<Stroke> drawingStrokes;
 
+    private boolean isCircle = true;
     private float thickness = 10;
+    private float degree = 0;
 
     public SketchView(Context context, AttributeSet attrs) {
         // Constructor
         super(context, attrs);
-
-        Log.i("TEST", "KSA");
 
         // Give context to Letter class
         Letter.setResources(getContext());
@@ -150,53 +150,55 @@ public class SketchView extends View {
                 canvas.drawLine(leftTop.x, i * interval, rightBottom.x, i * interval, paint_line);
         }
 
-        for (int i = 0; i < letters.size(); i++) {
-            // Draw letter
+        if (drawLetter) {
+            for (int i = 0; i < letters.size(); i++) {
+                // Draw letter
 
-            // Letter instance to draw
-            Letter letter = letters.get(i);
+                // Letter instance to draw
+                Letter letter = letters.get(i);
 
-            // Letter's location
-            float x = letter.getPoint().x;
-            float y = letter.getPoint().y;
+                // Letter's location
+                float x = letter.getPoint().x;
+                float y = letter.getPoint().y;
 
-            // Adjust canvas fit to letter's scale and degree
-            canvas.scale(letter.getSize(), letter.getSize(), x + letter.getWidth() / 2,
-                    y + letter.getHeight() / 2);
-            canvas.rotate(letter.getDegree(), x + letter.getWidth() / 2,
-                    y + letter.getHeight() / 2);
+                // Adjust canvas fit to letter's scale and degree
+                canvas.scale(letter.getSize(), letter.getSize(), x + letter.getWidth() / 2,
+                        y + letter.getHeight() / 2);
+                canvas.rotate(letter.getDegree(), x + letter.getWidth() / 2,
+                        y + letter.getHeight() / 2);
 
-            // Draw letter bitmap
-            canvas.drawBitmap(letter.getBitmap(), x, y, null);
+                // Draw letter bitmap
+                canvas.drawBitmap(letter.getBitmap(), x, y, null);
 
-            // Draw border if letter is selected
-            if (i == selectedLetter) {
-                paint_selected.setStrokeWidth(getResources().getInteger(R.integer.sketch_selected_stroke) / letter.getSize() / scale);
-                canvas.drawRect(x, y, x + letter.getWidth(), y + letter.getHeight(), paint_selected);
+                // Draw border if letter is selected
+                if (i == selectedLetter) {
+                    paint_selected.setStrokeWidth(getResources().getInteger(R.integer.sketch_selected_stroke) / letter.getSize() / scale);
+                    canvas.drawRect(x, y, x + letter.getWidth(), y + letter.getHeight(), paint_selected);
 
-                // Draw delete button
-                Bitmap bitmap = Bitmap.createScaledBitmap(bitmapDelete,
-                        (int) (bitmapDelete.getWidth() / scale / letter.getSize()),
-                        (int) (bitmapDelete.getHeight() / scale / letter.getSize()), false);
-                canvas.drawBitmap(bitmap, x + letter.getWidth() - bitmap.getWidth(), y, null);
+                    // Draw delete button
+                    Bitmap bitmap = Bitmap.createScaledBitmap(bitmapDelete,
+                            (int) (bitmapDelete.getWidth() / scale / letter.getSize()),
+                            (int) (bitmapDelete.getHeight() / scale / letter.getSize()), false);
+                    canvas.drawBitmap(bitmap, x + letter.getWidth() - bitmap.getWidth(), y, null);
 
-                // Draw edit button
-                bitmap = Bitmap.createScaledBitmap(bitmapEdit,
-                        (int) (bitmapEdit.getWidth() / scale / letter.getSize()),
-                        (int) (bitmapEdit.getHeight() / scale / letter.getSize()), false);
-                canvas.drawBitmap(bitmap, x + letter.getWidth() - bitmap.getWidth(), y + letter.getHeight() - bitmap.getHeight(), null);
+                    // Draw edit button
+                    bitmap = Bitmap.createScaledBitmap(bitmapEdit,
+                            (int) (bitmapEdit.getWidth() / scale / letter.getSize()),
+                            (int) (bitmapEdit.getHeight() / scale / letter.getSize()), false);
+                    canvas.drawBitmap(bitmap, x + letter.getWidth() - bitmap.getWidth(), y + letter.getHeight() - bitmap.getHeight(), null);
+                }
+
+                // Turn back canvas to origin state
+                canvas.rotate(-letter.getDegree(), x + letter.getWidth() / 2,
+                        y + letter.getHeight() / 2);
+                canvas.scale(1.f / letter.getSize(), 1.f / letter.getSize(), x + letter.getWidth() / 2,
+                        y + letter.getHeight() / 2);
+
             }
-
-            // Turn back canvas to origin state
-            canvas.rotate(-letter.getDegree(), x + letter.getWidth() / 2,
-                    y + letter.getHeight() / 2);
-            canvas.scale(1.f / letter.getSize(), 1.f / letter.getSize(), x + letter.getWidth() / 2,
-                    y + letter.getHeight() / 2);
-
         }
 
         if (drawingMode) {
-            paint_drawing.setStrokeWidth(thickness * 2);
+            paint_drawing.setStrokeWidth(thickness / scale * 2);
 
             for (int i = 1; i < drawingPoints.size(); i++) {
                 Point p1 = drawingPoints.get(i - 1);
@@ -233,6 +235,7 @@ public class SketchView extends View {
                     if (sketchActivity != null) {
                         sketchActivity.setRedoButton(false);
                         sketchActivity.setUndoButton(false);
+                        sketchActivity.setAddButton(false);
                     }
                 case MotionEvent.ACTION_MOVE:
                     drawingPoints.add(trans);
@@ -253,13 +256,14 @@ public class SketchView extends View {
                         path.rLineTo(x2 - x1, y2 - y1);
                         path.addArc(new RectF(x2 - thickness, y2 - thickness, x2 + thickness, y2 + thickness), (float) -Math.PI / 2 - deg1, deg1 - deg2);
                     }
-                    drawingStrokes.add(new Stroke(drawingPoints, true));
+                    drawingStrokes.add(new Stroke(isCircle));
                     drawingPoints.clear();
 
                     if (sketchActivity != null) {
                         strokeStack.clear();
                         sketchActivity.setRedoButton(false);
                         sketchActivity.setUndoButton(true);
+                        sketchActivity.setAddButton(true);
                     }
                     break;
             }
@@ -456,7 +460,6 @@ public class SketchView extends View {
         invalidate();
 
         return true;
-        // return super.onTouchEvent(event);
     }
 
     private Pointer findPointer(int id) {
@@ -482,10 +485,14 @@ public class SketchView extends View {
 
         float width = letter.getWidth() / 2, height = letter.getHeight() / 2;
 
-        if (width - bitmapDelete.getWidth() < x2 && x2 < width && -height < y2 && y2 < -height + bitmapDelete.getHeight())
+        float size = bitmapDelete.getWidth();
+
+        if (width - size * 1.5f < x2 && x2 < width + size * 0.5f
+                && -height - size * 0.5f < y2 && y2 < -height + size * 1.5f)
             return TOUCH_DELETE;
 
-        if (width - bitmapDelete.getWidth() < x2 && x2 < width && height - bitmapDelete.getHeight() < y2 && y2 < height)
+        if (width - size * 1.5f < x2 && x2 < width + size * 0.5f
+                && height - size * 1.5f < y2 && y2 < height + size * 0.5f)
             return TOUCH_EDIT;
 
         if (-width < x2 && x2 < width && -height < y2 && y2 < height)
@@ -553,6 +560,7 @@ public class SketchView extends View {
                 drawingStrokes.remove(drawingStrokes.size() - 1);
 
                 if (sketchActivity != null) {
+                    sketchActivity.setAddButton(!drawingStrokes.isEmpty());
                     sketchActivity.setUndoButton(!drawingStrokes.isEmpty());
                     sketchActivity.setRedoButton(true);
                 }
@@ -571,6 +579,7 @@ public class SketchView extends View {
                 drawingStrokes.add(strokeStack.pop());
                 if (sketchActivity != null) {
                     sketchActivity.setUndoButton(true);
+                    sketchActivity.setAddButton(true);
                     sketchActivity.setRedoButton(!strokeStack.empty());
                 }
                 invalidate();
@@ -606,6 +615,8 @@ public class SketchView extends View {
     }
 
     public byte[] getData() {
+        if (letters.size() == 0)
+            return new byte[]{};
         String data = "";
         for (Letter letter : letters)
             data += 0 + "\t" + letter.getId() + "\t" + letter.getPoint().x + "\t" + letter.getPoint().y +
@@ -628,6 +639,9 @@ public class SketchView extends View {
 
     public void setDataByByteArray(byte[] data) {
         clear();
+
+        if (data.length == 0)
+            return;
 
         String stringData = new String(data);
         String[] datas = stringData.split("\n");
@@ -722,29 +736,82 @@ public class SketchView extends View {
 
     public void setDrawingMode(boolean drawingMode) {
         this.drawingMode = drawingMode;
-        drawingPoints = new ArrayList<>();
-        drawingStrokes = new ArrayList<>();
+        if (drawingMode) {
+            drawingPoints = new ArrayList<>();
+            drawingStrokes = new ArrayList<>();
+            selectedLetter = -1;
+            invalidate();
+            if (sketchActivity != null) {
+                sketchActivity.setUndoButton(false);
+                sketchActivity.setRedoButton(false);
+            }
+        } else {
+            if (sketchActivity != null) {
+                sketchActivity.setUndoButton(!undoStack.empty());
+                sketchActivity.setRedoButton(!redoStack.empty());
+            }
+        }
     }
 
-    public Bitmap getBitmapImage() {
-        float x_ = xShift, y_ = yShift, s_ = scale;
-        int selected_ = selectedLetter;
+    public Bitmap getBitmapImage(boolean drawingMode) {
+        if (drawingMode) {
+            drawGrid = false;
+            drawLetter = false;
+            invalidate();
 
-        drawGrid = false;
-        selectedLetter = -1;
-        regulateFitting();
-        setDrawingCacheEnabled(true);
-        Bitmap bitmap = getDrawingCache();
-        Bitmap screenShot = bitmap.copy(Bitmap.Config.ARGB_8888, false);
-        setDrawingCacheEnabled(false);
+            setDrawingCacheEnabled(true);
+            Bitmap bitmap = getDrawingCache();
+            Bitmap screenShot = bitmap.copy(Bitmap.Config.ARGB_8888, false);
+            setDrawingCacheEnabled(false);
 
-        drawGrid = true;
-        xShift = x_;
-        yShift = y_;
-        scale = s_;
-        selectedLetter = selected_;
-        invalidate();
-        return screenShot;
+            drawGrid = true;
+            drawLetter = true;
+            invalidate();
+
+            return screenShot;
+        } else {
+            float x_ = xShift, y_ = yShift, s_ = scale;
+            int selected_ = selectedLetter;
+
+            drawGrid = false;
+            selectedLetter = -1;
+            regulateFitting();
+            setDrawingCacheEnabled(true);
+            Bitmap bitmap = getDrawingCache();
+            Bitmap screenShot = bitmap.copy(Bitmap.Config.ARGB_8888, false);
+            setDrawingCacheEnabled(false);
+
+            drawGrid = true;
+            xShift = x_;
+            yShift = y_;
+            scale = s_;
+            selectedLetter = selected_;
+            invalidate();
+
+            return screenShot;
+        }
+    }
+
+    public void setDegree(float degree) {
+        this.degree = degree;
+    }
+
+    public void setThickness(float thickness) {
+        this.thickness = thickness;
+    }
+
+    public void setIsCircle(boolean isCircle) {
+        this.isCircle = isCircle;
+    }
+
+    public float[] getSettings() {
+        return new float[]{xShift, yShift, scale};
+    }
+
+    public void setSettings(float[] data) {
+        xShift = data[0];
+        yShift = data[1];
+        scale = data[2];
     }
 
     // Pointer class
@@ -811,11 +878,29 @@ public class SketchView extends View {
     private class Stroke {
         private ArrayList<Point> points;
         private boolean circle;
+        private float thickness_, degree_;
+        private Path path;
 
-        Stroke(ArrayList<Point> points, boolean circle) {
-            this.points = new ArrayList<Point>();
-            this.points.addAll(points);
+        Stroke(boolean circle) {
             this.circle = circle;
+            this.points = new ArrayList<>();
+            this.points.addAll(drawingPoints);
+            this.thickness_ = thickness / scale;
+            this.degree_ = degree;
+
+            if (!circle) {
+                path = new Path();
+                path.moveTo(points.get(0).x + (float) Math.sin(degree_) * thickness_,
+                        points.get(0).y - (float) Math.cos(degree_) * thickness_);
+                for (int i = 1; i < points.size(); i++) {
+                    path.rLineTo(points.get(i).x - points.get(i - 1).x, points.get(i).y - points.get(i - 1).y);
+                }
+                path.rLineTo(-2 * (float) Math.sin(degree_) * thickness_, 2 * (float) Math.cos(degree_) * thickness_);
+                for (int i = points.size() - 1; i > 0; i--) {
+                    path.rLineTo(points.get(i - 1).x - points.get(i).x, points.get(i - 1).y - points.get(i).y);
+                }
+                path.rLineTo(2 * (float) Math.sin(degree_) * thickness_, -2 * (float) Math.cos(degree_) * thickness_);
+            }
         }
 
         void draw(Canvas canvas) {
@@ -823,10 +908,13 @@ public class SketchView extends View {
                 for (int i = 0; i < points.size() - 1; i++) {
                     Point p1 = points.get(i);
                     Point p2 = points.get(i + 1);
+                    paint_drawing.setStrokeWidth(thickness_ * 2);
                     canvas.drawLine(p1.x, p1.y, p2.x, p2.y, paint_drawing);
                 }
                 for (int i = 0; i < points.size(); i++)
-                    canvas.drawCircle(points.get(i).x, points.get(i).y, thickness, paint_drawing);
+                    canvas.drawCircle(points.get(i).x, points.get(i).y, thickness_, paint_drawing);
+            } else {
+                canvas.drawPath(path, paint_drawing);
             }
         }
     }

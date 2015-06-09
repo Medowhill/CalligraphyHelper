@@ -12,5 +12,11 @@
     <dimen name="sketch_edit_textSize">13sp</dimen>
     <dimen name="sketch_fileName_margin">10dp</dimen>
     <dimen name="sketch_fileName_textSize">20sp</dimen>
+    <dimen name="sketch_fileName_radius">5dp</dimen>
+    <dimen name="sketch_fileName_padding">5dp</dimen>
+    <dimen name="sketch_preview_size">60dp</dimen>
+    <dimen name="sketch_pen_button_margin">10dp</dimen>
+    <dimen name="sketch_newletter_radius">10dp</dimen>
+    <dimen name="sketch_newletter_padding">8dp</dimen>
 
 </resources>

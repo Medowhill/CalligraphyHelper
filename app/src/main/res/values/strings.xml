@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">CalligraphyHelper</string>
+    <string name="app_name">A-Calli</string>
     <string name="sharedPreferences_name">data</string>
     <string name="sharedPreferences_version">version</string>
     <string name="fileName_saveFileNames">saveFiles</string>
@@ -38,7 +38,13 @@
     <string name="open">열기</string>
     <string name="sensitivity">민감도</string>
     <string name="share">공유</string>
-    <string name="makingDatabase">애플리케이션 최초 실행 시 데이터 베이스를 생성합니다. 잠시만 기다려 주세요.</string>
+    <string name="makingDatabase">애플리케이션 최초 실행 시 데이터 베이스를 생성합니다. 잠시만 기다려 주세요. 데이터 베이스 생성이 완료되면 도움말 화면이 표시됩니다.</string>
     <string name="failSavingLetter">글씨를 데이터베이스에 추가하는데 실패했습니다.</string>
+    <string name="fontName">NanumGothic.ttf</string>
+    <string name="penDegree">펜 기울기</string>
+    <string name="penThickness">펜 두께</string>
+    <string name="failLoadLetter">작성한 글씨를 불러오는데 실패했습니다.</string>
+    <string name="failLoadImageFile">이미지 파일로 변환하여 불러오는데 실패했습니다.</string>
+    <string name="failFindSaving">저장소를 찾지 못했습니다.</string>
 
 </resources>
